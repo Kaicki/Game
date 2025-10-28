@@ -1,77 +1,155 @@
+/* ... (Manter o CSS anterior, mas ajustar/adicionar) ... */
+
 body {
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif; /* Vamos usar uma fonte do Google Fonts */
+    background: linear-gradient(135deg, #6dd5ed, #2193b0); /* Fundo gradiente */
+    color: #fff; /* Texto claro */
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f0f0f0;
+    min-height: 100vh; /* Garante que o fundo cubra toda a altura */
     margin: 0;
     padding: 20px;
+    box-sizing: border-box; /* Inclui padding na largura/altura total */
 }
 
 h1 {
-    color: #333;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra no título */
+    margin-bottom: 30px;
+    font-size: 3em;
 }
 
 .game-container {
     display: grid;
-    /* Vamos usar 4 colunas */
-    grid-template-columns: repeat(4, 100px); 
-    grid-gap: 10px;
-    padding: 20px;
-    border: 2px solid #ccc;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    grid-template-columns: repeat(4, 120px); /* Cartas um pouco maiores */
+    grid-gap: 15px; /* Espaçamento maior entre cartas */
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.15); /* Fundo translúcido */
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra mais forte */
+    perspective: 1000px;
+    position: relative;
 }
 
 .card {
-    width: 100px;
-    height: 100px;
-    background-color: #4CAF50; /* Cor da capa da carta (fundo) */
-    border-radius: 6px;
-    perspective: 1000px; /* Para o efeito 3D do flip */
+    width: 120px;
+    height: 120px;
+    background-color: #3f51b5; /* Cor de fundo da carta (azul vibrante) */
+    border-radius: 10px;
     cursor: pointer;
     position: relative;
-    transition: transform 0.6s;
     transform-style: preserve-3d;
+    transition: transform 0.6s ease, box-shadow 0.2s ease; /* Transição na sombra também */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Estado da carta virada (mostrando o conteúdo) */
+.card:hover:not(.flip):not(.match) {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra ao passar o mouse */
+    transform: translateY(-3px); /* Leve elevação ao passar o mouse */
+}
+
 .card.flip {
     transform: rotateY(180deg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
-/* O conteúdo da carta (frente e verso) */
 .card-face, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden; /* Esconde a parte de trás quando ela não está virada para nós */
+    backface-visibility: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
-    border-radius: 6px;
+    font-size: 3.5em; /* Icones ou texto maiores */
+    border-radius: 10px;
+    color: #fff; /* Cor do ícone */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
 }
 
-/* A parte de trás (o que aparece quando está virada) */
+.card-face {
+    background-color: #3f51b5; /* Azul da capa */
+    /* Você pode adicionar uma imagem aqui */
+    /* background-image: url('caminho/para/imagem_capa.png'); */
+    background-size: cover;
+    background-position: center;
+}
+
 .card-back {
-    background-color: #eee;
+    background-color: #ffe082; /* Amarelo claro para o conteúdo da carta */
     color: #333;
     transform: rotateY(180deg);
 }
 
-/* Estado de par encontrado */
 .card.match {
-    /* Mantém virada e muda o visual para indicar que o par foi feito */
     cursor: default;
-    opacity: 0.6;
+    opacity: 0.8; /* Levemente transparente */
+    transform: scale(0.95); /* Leve redução para indicar que foi encontrada */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+    animation: match-pulse 0.8s ease forwards; /* Animação de "acerto" */
+}
+
+@keyframes match-pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.03); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.8; }
 }
 
 .status-bar {
-    margin-top: 20px;
+    margin-top: 30px;
     display: flex;
-    gap: 20px;
+    gap: 30px;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+.status-bar p {
+    margin: 0;
+    font-size: 1.2em;
+    color: #e0e0e0;
+}
+
+#reset-button {
+    background-color: #ff5252; /* Botão de reiniciar vermelho */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#reset-button:hover {
+    background-color: #e04040;
+    transform: translateY(-2px);
+}
+
+/* Responsividade básica */
+@media (max-width: 600px) {
+    .game-container {
+        grid-template-columns: repeat(4, 70px); /* Reduz tamanho das cartas */
+        grid-gap: 8px;
+        padding: 15px;
+    }
+    .card {
+        width: 70px;
+        height: 70px;
+    }
+    .card-face, .card-back {
+        font-size: 2em;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    .status-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
