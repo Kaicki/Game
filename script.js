@@ -1,147 +1,46 @@
-// 1. Definição do Jogo
-// Usamos emojis vibrantes como conteúdo das cartas
-const cardContents = ['😊', '😎', '🤩', '🥳', '🚀', '🌈', '🌟', '🍕']; 
+// 1. Variável para armazenar a pontuação atual de "Vigilância"
+let pontosDeVigilancia = 0;
 
-let gameCards = [];
-let hasFlippedCard = false;
-let lockBoard = false; // Bloqueia virar mais cartas enquanto checa o par
-let firstCard = null;
-let secondCard = null;
+// 2. Elementos HTML para a pontuação e mensagens
+const elementoPlacar = document.getElementById('current-score');
+const elementoMensagem = document.getElementById('message-area');
 
-let matchesFound = 0;
-let tries = 0;
-
-// Referências ao DOM
-const gameContainer = document.querySelector('.game-container');
-const matchesDisplay = document.getElementById('matches');
-const triesDisplay = document.getElementById('tries');
-const resetButton = document.getElementById('reset-button');
-
-// Configuração de Sons (É NECESSÁRIO CRIAR A PASTA 'sounds' com os MP3s)
-const flipSound = new Audio('sounds/flip.mp3'); 
-const matchSound = new Audio('sounds/match.mp3');
-const wrongSound = new Audio('sounds/wrong.mp3');
-const winSound = new Audio('sounds/win.mp3');
-
-// Função para embaralhar um array (Algoritmo Fisher-Yates)
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; 
-    }
+// 3. Função para atualizar a pontuação exibida no HTML
+function atualizarPlacar() {
+    elementoPlacar.textContent = pontosDeVigilancia;
+    console.log("Pontos de Vigilância: " + pontosDeVigilancia);
 }
 
-// 2. Inicialização do Jogo
-function initGame() {
-    // Cria os pares e embaralha
-    gameCards = [...cardContents, ...cardContents]; 
-    shuffle(gameCards);
-
-    gameContainer.innerHTML = ''; // Limpa o container
-    matchesFound = 0;
-    tries = 0;
-    matchesDisplay.textContent = matchesFound;
-    triesDisplay.textContent = tries;
-    
-    resetBoard(); // Garante que as variáveis de controle estão limpas
-
-    // Cria os elementos das cartas no HTML
-    gameCards.forEach(content => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.dataset.content = content; // Armazena o valor do emoji
-
-        // Ícone de interrogação no verso da carta (usando Font Awesome)
-        card.innerHTML = `
-            <div class="card-face"><i class="fas fa-question"></i></div>
-            <div class="card-back">${content}</div>
-        `;
-        
-        card.addEventListener('click', flipCard);
-        gameContainer.appendChild(card);
-    });
-}
-
-// 3. Lógica de Virar a Carta
-function flipCard() {
-    if (lockBoard) return; 
-    if (this === firstCard) return; 
-    if (this.classList.contains('match')) return; // Não vira cartas já combinadas
-
-    this.classList.add('flip'); 
-    flipSound.play(); 
-
-    if (!hasFlippedCard) {
-        // Primeira carta virada
-        hasFlippedCard = true;
-        firstCard = this;
-    } else {
-        // Segunda carta virada
-        secondCard = this;
-        tries++;
-        triesDisplay.textContent = tries;
-
-        checkForMatch();
-    }
-}
-
-// 4. Checagem do Par
-function checkForMatch() {
-    const isMatch = firstCard.dataset.content === secondCard.dataset.content;
-
-    if (isMatch) {
-        matchSound.play();
-        disableCards(); 
-        matchesFound++;
-        matchesDisplay.textContent = matchesFound;
-
-        if (matchesFound === cardContents.length) {
-            // Vitória!
-            winSound.play(); 
-            setTimeout(() => {
-                alert(`🎉 Parabéns! Você ganhou em ${tries} tentativas!`);
-            }, 500);
-        }
-    } else {
-        wrongSound.play();
-        unflipCards(); 
-    }
-}
-
-// 5. Par Encontrado (Desabilitar clique)
-function disableCards() {
-    // Remove os event listeners para que as cartas não possam mais ser clicadas
-    firstCard.removeEventListener('click', flipCard);
-    secondCard.removeEventListener('click', flipCard);
-
-    // Adiciona a classe 'match' para o estilo e animação
-    firstCard.classList.add('match');
-    secondCard.classList.add('match');
-
-    resetBoard();
-}
-
-// 6. Par Não Encontrado (Desvirar)
-function unflipCards() {
-    lockBoard = true; // Bloqueia o tabuleiro para evitar mais cliques enquanto desvira
-
-    // Espera 1 segundo para o jogador ver a diferença
+// 4. Função para exibir mensagens temáticas
+function exibirMensagem(texto, cor = 'var(--bat-blue)') {
+    elementoMensagem.textContent = texto;
+    elementoMensagem.style.color = cor;
+    // Remove a mensagem depois de um tempo
     setTimeout(() => {
-        firstCard.classList.remove('flip');
-        secondCard.classList.remove('flip');
-        
-        resetBoard();
-    }, 1000); 
+        elementoMensagem.textContent = '';
+    }, 3000); 
 }
 
-// 7. Resetar as variáveis de controle
-function resetBoard() {
-    [hasFlippedCard, lockBoard] = [false, false];
-    [firstCard, secondCard] = [null, null];
+// 5. Função que será chamada quando o jogador ganhar pontos
+function adicionarPonto(pontosGanhos = 1) {
+    pontosDeVigilancia += pontosGanhos;
+    atualizarPlacar();
+    exibirMensagem(`+${pontosGanhos} Vigilância! Gotham agradece.`);
+
+    // Lógica de "Game Over" ou objetivo alcançado com tema Batman
+    if (pontosDeVigilancia >= 10) {
+        exibirMensagem("O Cavaleiro das Trevas triunfa! Missão concluída.", 'var(--bat-yellow)');
+        // Em um jogo real, aqui você chamaria uma função de Fim de Jogo ou próxima fase.
+        // Por exemplo, desativar o botão para evitar mais cliques.
+        document.querySelector('.bat-button').disabled = true;
+    }
 }
 
-// 8. Evento do Botão Reiniciar
-resetButton.addEventListener('click', initGame);
+// 6. Inicia o placar quando a página carrega
+document.addEventListener('DOMContentLoaded', (event) => {
+    atualizarPlacar();
+    exibirMensagem("Iniciando Operação Vigilância...", 'var(--bat-light-gray)');
+});
 
-// Inicia o jogo quando a página carrega
-initGame();
+// No seu jogo, você chamaria 'adicionarPonto(valor)' quando o jogador realizar uma ação temática.
+// Ex: derrotar um capanga do Coringa, desarmar uma bomba, etc.
