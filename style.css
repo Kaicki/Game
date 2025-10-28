@@ -1,57 +1,56 @@
-/* ... (Manter o CSS anterior, mas ajustar/adicionar) ... */
-
 body {
-    font-family: 'Open Sans', sans-serif; /* Vamos usar uma fonte do Google Fonts */
-    background: linear-gradient(135deg, #6dd5ed, #2193b0); /* Fundo gradiente */
-    color: #fff; /* Texto claro */
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(135deg, #6dd5ed, #2193b0); /* Fundo gradiente vibrante */
+    color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh; /* Garante que o fundo cubra toda a altura */
+    min-height: 100vh;
     margin: 0;
     padding: 20px;
-    box-sizing: border-box; /* Inclui padding na largura/altura total */
+    box-sizing: border-box;
 }
 
 h1 {
     color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra no título */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     margin-bottom: 30px;
     font-size: 3em;
 }
 
 .game-container {
     display: grid;
-    grid-template-columns: repeat(4, 120px); /* Cartas um pouco maiores */
-    grid-gap: 15px; /* Espaçamento maior entre cartas */
+    /* 4 colunas com cartas de 120px */
+    grid-template-columns: repeat(4, 120px); 
+    grid-gap: 15px;
     padding: 25px;
     background-color: rgba(255, 255, 255, 0.15); /* Fundo translúcido */
     border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra mais forte */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     perspective: 1000px;
-    position: relative;
 }
 
 .card {
     width: 120px;
     height: 120px;
-    background-color: #3f51b5; /* Cor de fundo da carta (azul vibrante) */
+    background-color: #3f51b5; /* Azul forte para a capa */
     border-radius: 10px;
     cursor: pointer;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.6s ease, box-shadow 0.2s ease; /* Transição na sombra também */
+    transition: transform 0.6s ease, box-shadow 0.2s ease, opacity 0.4s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card:hover:not(.flip):not(.match) {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra ao passar o mouse */
-    transform: translateY(-3px); /* Leve elevação ao passar o mouse */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Sombra mais destacada */
+    transform: translateY(-5px); /* Efeito de elevação sutil */
 }
 
+/* Estado da carta virada (mostrando o conteúdo) */
 .card.flip {
     transform: rotateY(180deg);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .card-face, .card-back {
@@ -62,39 +61,35 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.5em; /* Icones ou texto maiores */
+    font-size: 3.5em; 
     border-radius: 10px;
-    color: #fff; /* Cor do ícone */
+    color: #fff;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     font-weight: bold;
 }
 
 .card-face {
     background-color: #3f51b5; /* Azul da capa */
-    /* Você pode adicionar uma imagem aqui */
-    /* background-image: url('caminho/para/imagem_capa.png'); */
-    background-size: cover;
-    background-position: center;
 }
 
 .card-back {
-    background-color: #ffe082; /* Amarelo claro para o conteúdo da carta */
+    background-color: #ffe082; /* Amarelo claro e chamativo para o conteúdo */
     color: #333;
     transform: rotateY(180deg);
 }
 
+/* Estado de par encontrado */
 .card.match {
     cursor: default;
-    opacity: 0.8; /* Levemente transparente */
-    transform: scale(0.95); /* Leve redução para indicar que foi encontrada */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
-    animation: match-pulse 0.8s ease forwards; /* Animação de "acerto" */
+    opacity: 0.7; 
+    transform: scale(0.95);
+    animation: match-pulse 0.8s ease forwards; /* Ativa a animação */
 }
 
 @keyframes match-pulse {
-    0% { transform: scale(0.95); opacity: 0.8; }
-    50% { transform: scale(1.03); opacity: 1; }
-    100% { transform: scale(0.95); opacity: 0.8; }
+    0% { transform: scale(0.95); opacity: 0.7; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.7; }
 }
 
 .status-bar {
@@ -115,7 +110,7 @@ h1 {
 }
 
 #reset-button {
-    background-color: #ff5252; /* Botão de reiniciar vermelho */
+    background-color: #ff5252;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -131,22 +126,22 @@ h1 {
     transform: translateY(-2px);
 }
 
-/* Responsividade básica */
-@media (max-width: 600px) {
+/* Responsividade básica (para telas pequenas) */
+@media (max-width: 650px) {
     .game-container {
-        grid-template-columns: repeat(4, 70px); /* Reduz tamanho das cartas */
-        grid-gap: 8px;
+        grid-template-columns: repeat(4, 75px); /* Reduz tamanho das cartas */
+        grid-gap: 10px;
         padding: 15px;
     }
     .card {
-        width: 70px;
-        height: 70px;
+        width: 75px;
+        height: 75px;
     }
     .card-face, .card-back {
         font-size: 2em;
     }
     h1 {
-        font-size: 2em;
+        font-size: 2.5em;
     }
     .status-bar {
         flex-direction: column;
