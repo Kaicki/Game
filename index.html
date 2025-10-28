@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gotham Arcade - O Legado do Morcego</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Michroma&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="bat-header">
+        <div class="bat-logo">
+            <i class="fas fa-bat fa-2x"></i> <span class="logo-text">GOTHAM ARCADE</span>
+        </div>
+        <div id="score-container">
+            Pontos de Vigilância: <span id="current-score">0</span>
+        </div>
+    </header>
+
+    <main class="bat-main-content">
+        <div id="game-area">
+            <h2>A Batcaverna dos Desafios</h2>
+            <p>Clique no Bat-Sinal para ativar a vigilância e ganhar pontos!</p>
+            <button class="bat-button" onclick="adicionarPonto()">
+                <i class="fas fa-signal-1"></i> Ativar Bat-Sinal
+            </button>
+            <div id="message-area"></div>
+        </div>
+    </main>
+
+    <footer class="bat-footer">
+        <p>&copy; 2023 Wayne Enterprises. Todos os direitos reservados à Liga da Justiça.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
