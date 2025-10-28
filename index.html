@@ -3,44 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bat-Pulo de Gotham</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Michroma&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css"> 
+    <title>Jogo de Adivinhação - Texto Puro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="bat-header">
-        <div class="bat-logo">
-            <i class="fas fa-mask"></i> 
-            <span class="logo-text">BAT-PULO DE GOTHAM</span>
-        </div>
-        <div id="score-container">
-            Pontos de Vigilância: <span id="current-score">0</span>
-        </div>
-    </header>
+    <div class="game-container">
+        <h1>O JOGO DO TEXTO PURO</h1>
 
-    <main class="bat-main-content">
+        <p class="instruction-text">
+            Clique em "PLAY NOW" para começar. Tente adivinhar o número secreto entre 1 e 10!
+        </p>
+
         <div id="game-area">
-            
-            <div id="game-board">
-                <div id="batman"></div>
-                <div id="joker-obstacle"></div>
-                <div id="game-status">
-                    Pressione ESPAÇO ou clique para PULAR!
-                </div>
-            </div>
-
-            <button class="bat-button" id="restart-button" style="display: none;">
-                Reiniciar Missão
+            <button class="play-button" id="startGameButton">
+                <span>PLAY NOW</span>
             </button>
         </div>
-    </main>
 
-    <footer class="bat-footer">
-        <p>&copy; 2023 Wayne Enterprises. A vigilância é constante.</p>
-    </footer>
+        <p id="message-display" class="result-message"></p>
+        
+        <div id="input-area" style="display:none;">
+            <input type="number" id="guessInput" min="1" max="10" placeholder="Seu palpite (1-10)">
+            <button class="submit-button">ADIVINHAR</button>
+        </div>
+
+    </div>
 
     <script src="script.js"></script>
 </body>
