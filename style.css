@@ -1,150 +1,172 @@
+/* Importação de fontes para o tema Batman */
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Michroma&display=swap');
+
+:root {
+    --bat-dark-gray: #1a1a1a;
+    --bat-medium-gray: #333333;
+    --bat-light-gray: #aaaaaa;
+    --bat-yellow: #fdd835; /* Amarelo clássico do símbolo */
+    --bat-blue: #2196f3; /* Azul escuro, como o céu de Gotham */
+    --bat-font-title: 'Bangers', cursive; /* Fonte impactante para títulos */
+    --bat-font-body: 'Michroma', sans-serif; /* Fonte tecnológica para corpo */
+}
+
 body {
-    font-family: 'Open Sans', sans-serif;
-    background: linear-gradient(135deg, #6dd5ed, #2193b0); /* Fundo gradiente vibrante */
-    color: #fff;
+    margin: 0;
+    font-family: var(--bat-font-body);
+    background-color: var(--bat-dark-gray);
+    color: var(--bat-light-gray);
+    text-align: center;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
-h1 {
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    margin-bottom: 30px;
-    font-size: 3em;
-}
-
-.game-container {
-    display: grid;
-    /* 4 colunas com cartas de 120px */
-    grid-template-columns: repeat(4, 120px); 
-    grid-gap: 15px;
-    padding: 25px;
-    background-color: rgba(255, 255, 255, 0.15); /* Fundo translúcido */
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    perspective: 1000px;
-}
-
-.card {
-    width: 120px;
-    height: 120px;
-    background-color: #3f51b5; /* Azul forte para a capa */
-    border-radius: 10px;
-    cursor: pointer;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.6s ease, box-shadow 0.2s ease, opacity 0.4s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.card:hover:not(.flip):not(.match) {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Sombra mais destacada */
-    transform: translateY(-5px); /* Efeito de elevação sutil */
-}
-
-/* Estado da carta virada (mostrando o conteúdo) */
-.card.flip {
-    transform: rotateY(180deg);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-}
-
-.card-face, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
+/* Cabeçalho do Batman */
+.bat-header {
+    background-color: var(--bat-medium-gray);
+    padding: 15px 30px;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--bat-yellow);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.bat-logo {
+    display: flex;
+    align-items: center;
+    color: var(--bat-yellow);
+    font-family: var(--bat-font-title);
+    font-size: 1.8em;
+}
+
+.bat-logo .fas {
+    margin-right: 10px;
+    font-size: 1.5em; /* Ajuste o tamanho do ícone */
+}
+/* Para o Font Awesome, caso ele não tenha o ícone de morcego, um simples quadrado ou algo alternativo aparecerá */
+/* No seu projeto real, você poderia usar um SVG de um morcego para um logo perfeito */
+
+.logo-text {
+    letter-spacing: 2px;
+}
+
+/* Container de Pontuação */
+#score-container {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--bat-light-gray);
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid var(--bat-blue);
+    display: flex;
+    align-items: center;
+}
+
+#current-score {
+    color: var(--bat-yellow);
+    margin-left: 5px;
+    font-size: 1.2em;
+}
+
+/* Conteúdo Principal */
+.bat-main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#game-area {
+    background-color: var(--bat-medium-gray);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    max-width: 800px;
+    width: 90%;
+    border: 1px solid var(--bat-blue);
+}
+
+#game-area h2 {
+    font-family: var(--bat-font-title);
+    color: var(--bat-yellow);
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+#game-area p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: var(--bat-light-gray);
+}
+
+/* Botão Estilo Batman */
+.bat-button {
+    background-color: var(--bat-yellow);
+    color: var(--bat-dark-gray);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.3em;
+    font-family: var(--bat-font-body);
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.5em; 
-    border-radius: 10px;
-    color: #fff;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-.card-face {
-    background-color: #3f51b5; /* Azul da capa */
+.bat-button:hover {
+    background-color: #ffd700; /* Amarelo mais claro no hover */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-.card-back {
-    background-color: #ffe082; /* Amarelo claro e chamativo para o conteúdo */
-    color: #333;
-    transform: rotateY(180deg);
+.bat-button:active {
+    background-color: #ccac00; /* Amarelo mais escuro no clique */
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
 }
 
-/* Estado de par encontrado */
-.card.match {
-    cursor: default;
-    opacity: 0.7; 
-    transform: scale(0.95);
-    animation: match-pulse 0.8s ease forwards; /* Ativa a animação */
-}
-
-@keyframes match-pulse {
-    0% { transform: scale(0.95); opacity: 0.7; }
-    50% { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(0.95); opacity: 0.7; }
-}
-
-.status-bar {
-    margin-top: 30px;
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.status-bar p {
-    margin: 0;
-    font-size: 1.2em;
-    color: #e0e0e0;
-}
-
-#reset-button {
-    background-color: #ff5252;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+.bat-button .fas {
+    margin-right: 10px;
     font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-#reset-button:hover {
-    background-color: #e04040;
-    transform: translateY(-2px);
+/* Área de Mensagens */
+#message-area {
+    margin-top: 25px;
+    font-size: 1.2em;
+    font-family: var(--bat-font-title);
+    color: var(--bat-blue);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Responsividade básica (para telas pequenas) */
-@media (max-width: 650px) {
-    .game-container {
-        grid-template-columns: repeat(4, 75px); /* Reduz tamanho das cartas */
-        grid-gap: 10px;
-        padding: 15px;
-    }
-    .card {
-        width: 75px;
-        height: 75px;
-    }
-    .card-face, .card-back {
-        font-size: 2em;
-    }
-    h1 {
-        font-size: 2.5em;
-    }
-    .status-bar {
-        flex-direction: column;
-        gap: 10px;
-    }
+/* Rodapé do Batman */
+.bat-footer {
+    background-color: var(--bat-medium-gray);
+    color: var(--bat-light-gray);
+    padding: 15px;
+    font-size: 0.9em;
+    border-top: 2px solid var(--bat-blue);
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.4);
+    margin-top: auto; /* Empurra o rodapé para baixo */
 }
+
+/* Ajustes para ícone de morcego caso Font Awesome não o tenha diretamente como 'fa-bat' */
+/* Você pode usar um SVG real para um logo perfeito */
+.bat-logo .fa-bat::before {
+    content: "\f2b9"; /* Código de um ícone de morcego genérico ou similar, se disponível. Ou substitua por um SVG real. */
+}
+/* Se você não tem um ícone de morcego no Font Awesome (que é o caso, 'fa-bat' não existe nativamente), 
+   você pode usar um ícone genérico ou substituir por um elemento <img> com um SVG real.
+   Por exemplo: `<img src="batman-logo.svg" alt="Bat-Sinal" class="bat-logo-svg">`
+*/
