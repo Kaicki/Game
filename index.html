@@ -3,305 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Batman Hub - Jogos</title>
+<title>TeamHub - Engajamento Corporativo</title>
 <style>
-/* ======== GERAL ======== */
+/* ======== RESET ======== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ======== BODY ======== */
 body {
-  background: radial-gradient(circle at top, #1a1a1a, #000);
-  color: #f1c40f;
-  font-family: "Poppins", sans-serif;
-  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: #f4f9ff;
 }
 
-/* ======== HUB ======== */
-#hub {
+/* ======== HEADER ======== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header .logo {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #0077cc;
+}
+
+header nav a {
+  margin-left: 30px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+header nav a:hover {
+  color: #0077cc;
+}
+
+/* ======== HERO SECTION ======== */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding-top: 50px;
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #0077cc, #00aaff);
+  color: #fff;
 }
 
-h1 {
+.hero h1 {
   font-size: 3em;
-  letter-spacing: 3px;
-  text-shadow: 0 0 20px #f1c40f;
+  margin-bottom: 20px;
 }
 
-#games {
+.hero p {
+  font-size: 1.2em;
+  margin-bottom: 40px;
+}
+
+.hero button {
+  padding: 15px 40px;
+  font-size: 1em;
+  font-weight: bold;
+  background: #fff;
+  color: #0077cc;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.hero button:hover {
+  background: #0077cc;
+  color: #fff;
+}
+
+/* ======== CARDS SECTION ======== */
+.cards {
   display: flex;
   justify-content: center;
-  gap: 30px;
   flex-wrap: wrap;
-  margin-top: 60px;
+  gap: 30px;
+  padding: 80px 20px;
+  background: #f4f9ff;
 }
 
 .card {
-  background: rgba(20, 20, 20, 0.9);
-  border: 2px solid #f1c40f;
+  background: #fff;
   border-radius: 15px;
-  width: 250px;
-  height: 150px;
+  padding: 30px;
+  width: 280px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card img {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  color: #0077cc;
+}
+
+.card p {
+  font-size: 0.95em;
+  color: #555;
+}
+
+/* ======== FEATURES SECTION ======== */
+.features {
+  padding: 80px 20px;
+  background: #fff;
   display: flex;
   justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: 0.4s;
-  box-shadow: 0 0 15px #f1c40f33;
-}
-.card:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 25px #f1c40f;
-}
-.card h2 {
-  font-size: 1.3em;
-  color: #f1c40f;
+  flex-wrap: wrap;
+  gap: 40px;
 }
 
-/* ======== TELA DE JOGO ======== */
-.game-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #000;
-  color: white;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #f1c40f;
-  color: #000;
-  padding: 10px 20px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-/* ======== JOGO 1: BATALHA CONTRA O CORINGA ======== */
-#joker-battle {
+.feature {
   text-align: center;
-}
-#joker img {
-  width: 120px;
-}
-#batman img {
-  width: 120px;
-}
-#joker-battle button {
-  background: #f1c40f;
-  border: none;
-  padding: 15px 30px;
-  font-size: 1.1em;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 20px;
+  max-width: 250px;
 }
 
-/* ======== JOGO 2: BATMÓVEL ======== */
-#batmobile-game {
-  background: linear-gradient(#0b0b0b, #1a1a1a);
-}
-#road {
-  width: 100%;
-  height: 80%;
-  background: repeating-linear-gradient(
-    90deg,
-    #111 0 48%,
-    #222 48% 52%,
-    #111 52% 100%
-  );
-  position: relative;
-  overflow: hidden;
-}
-#car {
-  position: absolute;
-  bottom: 10%;
-  left: 45%;
-  width: 80px;
-  height: 40px;
-  background: #f1c40f;
-  border-radius: 5px;
-}
-.obstacle {
-  position: absolute;
-  top: 0;
-  width: 40px;
-  height: 40px;
-  background: red;
-  border-radius: 4px;
-}
-
-/* ======== JOGO 3: PLATAFORMA ======== */
-#platformer {
-  background: #222;
-  overflow: hidden;
-}
-#batman-player {
-  position: absolute;
-  bottom: 50px;
-  left: 100px;
+.feature img {
   width: 50px;
-  height: 50px;
-  background: #f1c40f;
-  border-radius: 10px;
-}
-.platform {
-  position: absolute;
-  background: #444;
-  height: 20px;
-  border-radius: 10px;
+  margin-bottom: 15px;
 }
 
+.feature h4 {
+  margin-bottom: 10px;
+  color: #0077cc;
+}
+
+.feature p {
+  font-size: 0.95em;
+  color: #555;
+}
+
+/* ======== FOOTER ======== */
+footer {
+  background: #0077cc;
+  color: #fff;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+footer a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+footer p {
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width: 768px) {
+  .cards, .features {
+    flex-direction: column;
+    align-items: center;
+  }
+}
 </style>
 </head>
 <body>
 
-<!-- HUB PRINCIPAL -->
-<section id="hub">
-  <h1>🦇 BATMAN HUB 🦇</h1>
-  <div id="games">
-    <div class="card" onclick="openGame('joker-battle')">
-      <h2>Batalha Contra o Coringa</h2>
-    </div>
-    <div class="card" onclick="openGame('batmobile-game')">
-      <h2>Corrida do Batmóvel</h2>
-    </div>
-    <div class="card" onclick="openGame('platformer')">
-      <h2>Plataforma do Batman</h2>
-    </div>
+<!-- HEADER -->
+<header>
+  <div class="logo">TeamHub</div>
+  <nav>
+    <a href="#hero">Home</a>
+    <a href="#cards">Serviços</a>
+    <a href="#features">Como Funciona</a>
+    <a href="#footer">Contato</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <h1>Engaje sua equipe de forma divertida</h1>
+  <p>Desafios e atividades para aumentar produtividade, bem-estar e colaboração no trabalho.</p>
+  <button>Comece Agora</button>
+</section>
+
+<!-- CARDS -->
+<section class="cards" id="cards">
+  <div class="card">
+    <img src="https://img.icons8.com/fluency/48/000000/teamwork.png" alt="Equipe">
+    <h3>Atividades em Equipe</h3>
+    <p>Engaje seus colaboradores com desafios que estimulam trabalho em equipe e colaboração.</p>
+  </div>
+  <div class="card">
+    <img src="https://img.icons8.com/fluency/48/000000/running.png" alt="Bem-estar">
+    <h3>Bem-estar Corporativo</h3>
+    <p>Promova saúde, movimento e qualidade de vida no ambiente de trabalho.</p>
+  </div>
+  <div class="card">
+    <img src="https://img.icons8.com/fluency/48/000000/idea.png" alt="Inovação">
+    <h3>Inovação e Criatividade</h3>
+    <p>Inspire a equipe a pensar fora da caixa e gerar ideias inovadoras para a empresa.</p>
   </div>
 </section>
 
-<!-- ======== JOGO 1: CORINGA ======== -->
-<section id="joker-battle" class="game-screen">
-  <button class="back-btn" onclick="goBack()">← Voltar</button>
-  <h2>Derrote o Coringa!</h2>
-  <div id="batman"><img src="https://upload.wikimedia.org/wikipedia/en/1/17/Batman-BenAffleck.jpg"></div>
-  <div id="joker"><img src="https://upload.wikimedia.org/wikipedia/en/9/9a/HeathLedgerJoker.jpg"></div>
-  <button onclick="fightJoker()">Atacar</button>
-  <p id="battle-result"></p>
-</section>
-
-<!-- ======== JOGO 2: BATMÓVEL ======== -->
-<section id="batmobile-game" class="game-screen">
-  <button class="back-btn" onclick="goBack()">← Voltar</button>
-  <h2>Dirija o Batmóvel e desvie dos obstáculos!</h2>
-  <div id="road">
-    <div id="car"></div>
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="feature">
+    <img src="https://img.icons8.com/fluency/48/000000/1-circle.png" alt="Passo 1">
+    <h4>Escolha seu desafio</h4>
+    <p>Selecione atividades que combinam com os objetivos da sua empresa.</p>
+  </div>
+  <div class="feature">
+    <img src="https://img.icons8.com/fluency/48/000000/2-circle.png" alt="Passo 2">
+    <h4>Participe em equipe</h4>
+    <p>Os colaboradores completam os desafios de forma divertida e colaborativa.</p>
+  </div>
+  <div class="feature">
+    <img src="https://img.icons8.com/fluency/48/000000/3-circle.png" alt="Passo 3">
+    <h4>Ganhe recompensas</h4>
+    <p>Reconheça e premie os melhores desempenhos da equipe.</p>
   </div>
 </section>
 
-<!-- ======== JOGO 3: PLATAFORMA ======== -->
-<section id="platformer" class="game-screen">
-  <button class="back-btn" onclick="goBack()">← Voltar</button>
-  <div id="batman-player"></div>
-  <div class="platform" style="width:200px; bottom:0; left:0;"></div>
-  <div class="platform" style="width:150px; bottom:150px; left:250px;"></div>
-  <div class="platform" style="width:200px; bottom:100px; left:500px;"></div>
-</section>
+<!-- FOOTER -->
+<footer id="footer">
+  <p>© 2025 TeamHub. Todos os direitos reservados.</p>
+  <p>Contato: <a href="mailto:contato@teamhub.com">contato@teamhub.com</a></p>
+</footer>
 
-<script>
-/* ======== CONTROLE DE TELAS ======== */
-function openGame(id) {
-  document.getElementById('hub').style.display = 'none';
-  document.getElementById(id).style.display = 'flex';
-}
-function goBack() {
-  document.querySelectorAll('.game-screen').forEach(g => g.style.display = 'none');
-  document.getElementById('hub').style.display = 'block';
-}
-
-/* ======== JOGO 1: BATALHA ======== */
-function fightJoker() {
-  const result = document.getElementById('battle-result');
-  const chance = Math.random();
-  if (chance > 0.5) {
-    result.textContent = "🦇 Batman venceu o Coringa!";
-  } else {
-    result.textContent = "😈 O Coringa escapou! Tente novamente!";
-  }
-}
-
-/* ======== JOGO 2: BATMÓVEL ======== */
-const road = document.getElementById('road');
-const car = document.getElementById('car');
-let carPos = 45;
-document.addEventListener('keydown', e => {
-  if (document.getElementById('batmobile-game').style.display === 'flex') {
-    if (e.key === 'ArrowLeft' && carPos > 5) carPos -= 5;
-    if (e.key === 'ArrowRight' && carPos < 90) carPos += 5;
-    car.style.left = carPos + '%';
-  }
-});
-setInterval(() => {
-  if (document.getElementById('batmobile-game').style.display !== 'flex') return;
-  const obs = document.createElement('div');
-  obs.classList.add('obstacle');
-  obs.style.left = Math.random() * 90 + '%';
-  road.appendChild(obs);
-  let top = 0;
-  const move = setInterval(() => {
-    top += 5;
-    obs.style.top = top + 'px';
-    if (top > window.innerHeight) {
-      obs.remove();
-      clearInterval(move);
-    }
-    const carRect = car.getBoundingClientRect();
-    const obsRect = obs.getBoundingClientRect();
-    if (
-      obsRect.bottom > carRect.top &&
-      obsRect.top < carRect.bottom &&
-      obsRect.left < carRect.right &&
-      obsRect.right > carRect.left
-    ) {
-      alert("💥 Batmóvel bateu!");
-      obs.remove();
-      clearInterval(move);
-    }
-  }, 60);
-}, 1000);
-
-/* ======== JOGO 3: PLATAFORMA ======== */
-const player = document.getElementById('batman-player');
-let y = 50;
-let jumping = false;
-document.addEventListener('keydown', e => {
-  if (document.getElementById('platformer').style.display === 'flex') {
-    if (e.key === ' ' && !jumping) {
-      jumping = true;
-      let jumpUp = setInterval(() => {
-        if (y < 200) {
-          y += 10;
-          player.style.bottom = y + 'px';
-        } else {
-          clearInterval(jumpUp);
-          let fall = setInterval(() => {
-            if (y > 50) {
-              y -= 10;
-              player.style.bottom = y + 'px';
-            } else {
-              clearInterval(fall);
-              jumping = false;
-            }
-          }, 40);
-        }
-      }, 40);
-    }
-  }
-});
-</script>
 </body>
 </html>
