@@ -1,11 +1,12 @@
 // 1. Definição do Jogo
-const cardContents = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; // 8 itens
-// Teremos 16 cartas no total (8 pares)
+// Usamos emojis vibrantes como conteúdo das cartas
+const cardContents = ['😊', '😎', '🤩', '🥳', '🚀', '🌈', '🌟', '🍕']; 
 
 let gameCards = [];
 let hasFlippedCard = false;
 let lockBoard = false; // Bloqueia virar mais cartas enquanto checa o par
-let firstCard, secondCard;
+let firstCard = null;
+let secondCard = null;
 
 let matchesFound = 0;
 let tries = 0;
@@ -16,18 +17,24 @@ const matchesDisplay = document.getElementById('matches');
 const triesDisplay = document.getElementById('tries');
 const resetButton = document.getElementById('reset-button');
 
+// Configuração de Sons (É NECESSÁRIO CRIAR A PASTA 'sounds' com os MP3s)
+const flipSound = new Audio('sounds/flip.mp3'); 
+const matchSound = new Audio('sounds/match.mp3');
+const wrongSound = new Audio('sounds/wrong.mp3');
+const winSound = new Audio('sounds/win.mp3');
+
 // Função para embaralhar um array (Algoritmo Fisher-Yates)
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Troca
+        [array[i], array[j]] = [array[j], array[i]]; 
     }
 }
 
 // 2. Inicialização do Jogo
 function initGame() {
     // Cria os pares e embaralha
-    gameCards = [...cardContents, ...cardContents]; // Duplica para criar os pares
+    gameCards = [...cardContents, ...cardContents]; 
     shuffle(gameCards);
 
     gameContainer.innerHTML = ''; // Limpa o container
@@ -35,16 +42,18 @@ function initGame() {
     tries = 0;
     matchesDisplay.textContent = matchesFound;
     triesDisplay.textContent = tries;
+    
+    resetBoard(); // Garante que as variáveis de controle estão limpas
 
     // Cria os elementos das cartas no HTML
     gameCards.forEach(content => {
         const card = document.createElement('div');
         card.classList.add('card');
-        card.dataset.content = content; // Armazena o valor do par na carta
+        card.dataset.content = content; // Armazena o valor do emoji
 
-        // Conteúdo visual da carta
+        // Ícone de interrogação no verso da carta (usando Font Awesome)
         card.innerHTML = `
-            <div class="card-face">?</div>
+            <div class="card-face"><i class="fas fa-question"></i></div>
             <div class="card-back">${content}</div>
         `;
         
@@ -55,17 +64,19 @@ function initGame() {
 
 // 3. Lógica de Virar a Carta
 function flipCard() {
-    if (lockBoard) return; // Se o tabuleiro estiver bloqueado, ignora o clique
-    if (this === firstCard) return; // Se clicou na mesma carta, ignora
+    if (lockBoard) return; 
+    if (this === firstCard) return; 
+    if (this.classList.contains('match')) return; // Não vira cartas já combinadas
 
-    this.classList.add('flip'); // Adiciona a classe CSS para virar
+    this.classList.add('flip'); 
+    flipSound.play(); 
 
     if (!hasFlippedCard) {
-        // Primeiro clique (primeira carta do par)
+        // Primeira carta virada
         hasFlippedCard = true;
         firstCard = this;
     } else {
-        // Segundo clique (segunda carta do par)
+        // Segunda carta virada
         secondCard = this;
         tries++;
         triesDisplay.textContent = tries;
@@ -79,26 +90,31 @@ function checkForMatch() {
     const isMatch = firstCard.dataset.content === secondCard.dataset.content;
 
     if (isMatch) {
-        disableCards(); // Par encontrado
+        matchSound.play();
+        disableCards(); 
         matchesFound++;
         matchesDisplay.textContent = matchesFound;
 
         if (matchesFound === cardContents.length) {
+            // Vitória!
+            winSound.play(); 
             setTimeout(() => {
-                alert(`Parabéns! Você ganhou em ${tries} tentativas!`);
+                alert(`🎉 Parabéns! Você ganhou em ${tries} tentativas!`);
             }, 500);
         }
     } else {
-        unflipCards(); // Não é par
+        wrongSound.play();
+        unflipCards(); 
     }
 }
 
 // 5. Par Encontrado (Desabilitar clique)
 function disableCards() {
+    // Remove os event listeners para que as cartas não possam mais ser clicadas
     firstCard.removeEventListener('click', flipCard);
     secondCard.removeEventListener('click', flipCard);
 
-    // Opcional: Adiciona uma classe para dar um estilo de "acertado"
+    // Adiciona a classe 'match' para o estilo e animação
     firstCard.classList.add('match');
     secondCard.classList.add('match');
 
@@ -107,15 +123,15 @@ function disableCards() {
 
 // 6. Par Não Encontrado (Desvirar)
 function unflipCards() {
-    lockBoard = true; // Bloqueia o tabuleiro
+    lockBoard = true; // Bloqueia o tabuleiro para evitar mais cliques enquanto desvira
 
-    // Espera um tempo para o jogador ver as cartas
+    // Espera 1 segundo para o jogador ver a diferença
     setTimeout(() => {
         firstCard.classList.remove('flip');
         secondCard.classList.remove('flip');
         
         resetBoard();
-    }, 1000); // 1 segundo
+    }, 1000); 
 }
 
 // 7. Resetar as variáveis de controle
@@ -129,4 +145,3 @@ resetButton.addEventListener('click', initGame);
 
 // Inicia o jogo quando a página carrega
 initGame();
-
