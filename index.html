@@ -3,109 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TeamHub - Engajamento Corporativo</title>
+<title>Pizzaria Saboroso</title>
 <style>
 /* ======== RESET ======== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* ======== BODY ======== */
 body {
-  font-family: 'Poppins', sans-serif;
-  line-height: 1.6;
+  background: #fff3e0;
   color: #333;
-  background: #f4f9ff;
+  line-height: 1.6;
 }
 
 /* ======== HEADER ======== */
 header {
+  background: #ff6f00;
+  padding: 20px 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 50px;
-  background: #ffffff;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  color: #fff;
 }
 
 header .logo {
   font-size: 1.8em;
   font-weight: bold;
-  color: #0077cc;
 }
 
 header nav a {
-  margin-left: 30px;
+  color: #fff;
   text-decoration: none;
-  color: #333;
+  margin-left: 30px;
   font-weight: 500;
   transition: color 0.3s;
 }
 
 header nav a:hover {
-  color: #0077cc;
+  color: #ffe082;
 }
 
-/* ======== HERO SECTION ======== */
+/* ======== HERO ======== */
 .hero {
+  background: url('https://images.unsplash.com/photo-1601924582970-94e6e429bd3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDF8fHBpenphfGVufDB8fHx8MTY5NTAxNjY3Mg&ixlib=rb-4.0.3&q=80&w=1080') no-repeat center center/cover;
+  height: 400px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 100px 20px;
-  background: linear-gradient(135deg, #0077cc, #00aaff);
   color: #fff;
+  text-align: center;
+  flex-direction: column;
 }
 
 .hero h1 {
   font-size: 3em;
-  margin-bottom: 20px;
+  text-shadow: 2px 2px 5px #000;
 }
 
 .hero p {
   font-size: 1.2em;
-  margin-bottom: 40px;
+  margin-top: 10px;
+  text-shadow: 1px 1px 4px #000;
 }
 
 .hero button {
+  margin-top: 20px;
   padding: 15px 40px;
   font-size: 1em;
-  font-weight: bold;
-  background: #fff;
-  color: #0077cc;
   border: none;
   border-radius: 30px;
+  background: #ffcc80;
+  color: #ff6f00;
+  font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .hero button:hover {
-  background: #0077cc;
-  color: #fff;
+  background: #ffb74d;
 }
 
-/* ======== CARDS SECTION ======== */
+/* ======== CARDÁPIO ======== */
+.menu {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.menu h2 {
+  font-size: 2em;
+  margin-bottom: 40px;
+  color: #ff6f00;
+}
+
 .cards {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 30px;
-  padding: 80px 20px;
-  background: #f4f9ff;
 }
 
 .card {
   background: #fff;
+  width: 250px;
   border-radius: 15px;
-  padding: 30px;
-  width: 280px;
   box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -115,74 +121,51 @@ header nav a:hover {
 }
 
 .card img {
-  width: 60px;
-  margin-bottom: 20px;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
 }
 
 .card h3 {
-  margin-bottom: 10px;
-  color: #0077cc;
+  padding: 15px;
+  color: #ff6f00;
 }
 
 .card p {
-  font-size: 0.95em;
+  padding: 0 15px 10px;
   color: #555;
 }
 
-/* ======== FEATURES SECTION ======== */
-.features {
-  padding: 80px 20px;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 40px;
+.card .price {
+  padding: 10px 15px;
+  font-weight: bold;
+  color: #ff6f00;
+  font-size: 1.1em;
 }
 
-.feature {
+/* ======== CONTATO ======== */
+.contact {
+  background: #ffcc80;
+  padding: 60px 20px;
   text-align: center;
-  max-width: 250px;
 }
 
-.feature img {
-  width: 50px;
-  margin-bottom: 15px;
+.contact h2 {
+  margin-bottom: 30px;
+  color: #ff6f00;
 }
 
-.feature h4 {
+.contact p {
   margin-bottom: 10px;
-  color: #0077cc;
-}
-
-.feature p {
-  font-size: 0.95em;
-  color: #555;
+  font-weight: bold;
 }
 
 /* ======== FOOTER ======== */
 footer {
-  background: #0077cc;
+  background: #ff6f00;
   color: #fff;
   text-align: center;
-  padding: 40px 20px;
-}
-
-footer a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-footer p {
-  margin-top: 10px;
-  font-size: 0.9em;
-}
-
-/* ======== RESPONSIVE ======== */
-@media (max-width: 768px) {
-  .cards, .features {
-    flex-direction: column;
-    align-items: center;
-  }
+  padding: 30px 20px;
 }
 </style>
 </head>
@@ -190,64 +173,56 @@ footer p {
 
 <!-- HEADER -->
 <header>
-  <div class="logo">TeamHub</div>
+  <div class="logo">Pizzaria Saboroso</div>
   <nav>
     <a href="#hero">Home</a>
-    <a href="#cards">Serviços</a>
-    <a href="#features">Como Funciona</a>
-    <a href="#footer">Contato</a>
+    <a href="#menu">Cardápio</a>
+    <a href="#contact">Contato</a>
   </nav>
 </header>
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <h1>Engaje sua equipe de forma divertida</h1>
-  <p>Desafios e atividades para aumentar produtividade, bem-estar e colaboração no trabalho.</p>
-  <button>Comece Agora</button>
+  <h1>Deliciosas Pizzas para Você!</h1>
+  <p>Sinta o verdadeiro sabor da nossa massa artesanal</p>
+  <button>Peça Agora</button>
 </section>
 
-<!-- CARDS -->
-<section class="cards" id="cards">
-  <div class="card">
-    <img src="https://img.icons8.com/fluency/48/000000/teamwork.png" alt="Equipe">
-    <h3>Atividades em Equipe</h3>
-    <p>Engaje seus colaboradores com desafios que estimulam trabalho em equipe e colaboração.</p>
-  </div>
-  <div class="card">
-    <img src="https://img.icons8.com/fluency/48/000000/running.png" alt="Bem-estar">
-    <h3>Bem-estar Corporativo</h3>
-    <p>Promova saúde, movimento e qualidade de vida no ambiente de trabalho.</p>
-  </div>
-  <div class="card">
-    <img src="https://img.icons8.com/fluency/48/000000/idea.png" alt="Inovação">
-    <h3>Inovação e Criatividade</h3>
-    <p>Inspire a equipe a pensar fora da caixa e gerar ideias inovadoras para a empresa.</p>
+<!-- CARDÁPIO -->
+<section class="menu" id="menu">
+  <h2>Nosso Cardápio</h2>
+  <div class="cards">
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1601924582970-94e6e429bd3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Pizza Margherita">
+      <h3>Pizza Margherita</h3>
+      <p>Molho de tomate, mussarela, manjericão fresco</p>
+      <div class="price">R$ 35,00</div>
+    </div>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1617196037982-3a71eecb7e9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Pizza Pepperoni">
+      <h3>Pizza Pepperoni</h3>
+      <p>Molho de tomate, mussarela e pepperoni fatiado</p>
+      <div class="price">R$ 40,00</div>
+    </div>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Pizza Quatro Queijos">
+      <h3>Pizza Quatro Queijos</h3>
+      <p>Mussarela, gorgonzola, provolone e parmesão</p>
+      <div class="price">R$ 45,00</div>
+    </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="feature">
-    <img src="https://img.icons8.com/fluency/48/000000/1-circle.png" alt="Passo 1">
-    <h4>Escolha seu desafio</h4>
-    <p>Selecione atividades que combinam com os objetivos da sua empresa.</p>
-  </div>
-  <div class="feature">
-    <img src="https://img.icons8.com/fluency/48/000000/2-circle.png" alt="Passo 2">
-    <h4>Participe em equipe</h4>
-    <p>Os colaboradores completam os desafios de forma divertida e colaborativa.</p>
-  </div>
-  <div class="feature">
-    <img src="https://img.icons8.com/fluency/48/000000/3-circle.png" alt="Passo 3">
-    <h4>Ganhe recompensas</h4>
-    <p>Reconheça e premie os melhores desempenhos da equipe.</p>
-  </div>
+<!-- CONTATO -->
+<section class="contact" id="contact">
+  <h2>Entre em Contato</h2>
+  <p>Telefone: (11) 99999-9999</p>
+  <p>Endereço: Rua das Pizzas, 123 - São Paulo, SP</p>
 </section>
 
 <!-- FOOTER -->
-<footer id="footer">
-  <p>© 2025 TeamHub. Todos os direitos reservados.</p>
-  <p>Contato: <a href="mailto:contato@teamhub.com">contato@teamhub.com</a></p>
+<footer>
+  © 2025 Pizzaria Saboroso. Todos os direitos reservados.
 </footer>
 
 </body>
