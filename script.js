@@ -1,176 +1,98 @@
-// 1. Variável para armazenar a pontuação atual de "Vigilância"
-let pontosDeVigilancia = 0;
+let secretNumber;
+let attempts = 0;
+const maxAttempts = 5; // Limita o número de tentativas
 
-// 2. Elementos HTML para a pontuação e mensagens
-const elementoPlacar = document.getElementById('current-score');
-const elementoMensagem = document.getElementById('message-area');
+const startButton = document.getElementById('startGameButton');
+const gameArea = document.getElementById('game-area');
+const inputArea = document.getElementById('input-area');
+const guessInput = document.getElementById('guessInput');
+const submitButton = document.querySelector('.submit-button');
+const messageDisplay = document.getElementById('message-display');
+const instructionText = document.querySelector('.instruction-text');
 
-// 3. Função para atualizar a pontuação exibida no HTML
-function atualizarPlacar() {
-    elementoPlacar.textContent = pontosDeVigilancia;
-    console.log("Pontos de Vigilância: " + pontosDeVigilancia);
-}
-
-// 4. Função para exibir mensagens temáticas
-function exibirMensagem(texto, cor = 'var(--bat-blue)') {
-    elementoMensagem.textContent = texto;
-    elementoMensagem.style.color = cor;
-    // Remove a mensagem depois de um tempo
-    setTimeout(() => {
-        elementoMensagem.textContent = '';
-    }, 3000); 
-}
-
-// 5. Função que será chamada quando o jogador ganhar pontos
-function adicionarPonto(pontosGanhos = 1) {
-    pontosDeVigilancia += pontosGanhos;
-    atualizarPlacar();
-    exibirMensagem(`+${pontosGanhos} Vigilância! Gotham agradece.`);
-
-    // Lógica de "Game Over" ou objetivo alcançado com tema Batman
-    if (pontosDeVigilancia >= 10) {
-        exibirMensagem("O Cavaleiro das Trevas triunfa! Missão concluída.", 'var(--bat-yellow)');
-        // Em um jogo real, aqui você chamaria uma função de Fim de Jogo ou próxima fase.
-        // Por exemplo, desativar o botão para evitar mais cliques.
-        document.querySelector('.bat-button').disabled = true;
-    }
-}
-
-// 6. Inicia o placar quando a página carrega
-document.addEventListener('DOMContentLoaded', (event) => {
-    atualizarPlacar();
-    exibirMensagem("Iniciando Operação Vigilância...", 'var(--bat-light-gray)');
-});
-
-// No seu jogo, você chamaria 'adicionarPonto(valor)' quando o jogador realizar uma ação temática.
-// Ex: derrotar um capanga do Coringa, desarmar uma bomba, etc
-let pontosDeVigilancia = 0;
-const elementoPlacar = document.getElementById('current-score');
-const elementoMensagem = document.getElementById('message-area');
-
-function atualizarPlacar() {
-    elementoPlacar.textContent = pontosDeVigilancia;
-}
-
-function exibirMensagem(texto, cor = 'var(--bat-blue)') {
-    // ... [Mantenha a função de mensagem do código anterior] ...
-}
-
-// =======================================================
-// NOVAS VARIÁVEIS E LÓGICA DO JOGO
-// =======================================================
-
-const batman = document.getElementById('batman');
-const obstaculo = document.getElementById('joker-obstacle');
-const gameBoard = document.getElementById('game-board');
-const gameStatus = document.getElementById('game-status');
-const restartButton = document.getElementById('restart-button');
-
-let isJumping = false;
-let isGameOver = true; // Começa como Game Over até o jogo ser iniciado
-
-// --- FUNÇÃO DE PULO ---
-function jump() {
-    if (isJumping || isGameOver) return;
-    
-    isJumping = true;
-    batman.classList.add('jump');
-
-    // Remove a classe 'jump' após a animação para permitir um novo pulo
-    setTimeout(() => {
-        batman.classList.remove('jump');
-        isJumping = false;
-    }, 500); 
-}
-
-// --- FUNÇÃO PARA INICIAR O JOGO ---
+/**
+ * Função principal para iniciar/reiniciar o jogo.
+ */
 function startGame() {
-    isGameOver = false;
-    pontosDeVigilancia = 0;
-    atualizarPlacar();
-    gameStatus.style.display = 'none';
-    restartButton.style.display = 'none';
+    // 1. Gera um novo número secreto entre 1 e 10.
+    secretNumber = Math.floor(Math.random() * 10) + 1;
+    attempts = 0;
+
+    // 2. Oculta o botão 'PLAY NOW' e mostra a área de input.
+    gameArea.style.display = 'none';
+    inputArea.style.display = 'flex';
     
-    // Inicia a animação do obstáculo
-    obstaculo.style.animationPlayState = 'running';
-    
-    // Inicia a contagem de pontos e a verificação de colisão
-    loopPontos = setInterval(updateScore, 50); // Incrementa a pontuação mais rápido
-    loopColisao = setInterval(checkCollision, 10);
-    exibirMensagem("A Missão de Gotham começou!");
+    // 3. Reseta o display de mensagens e o campo de input.
+    messageDisplay.textContent = "Jogo iniciado! Você tem " + (maxAttempts - attempts) + " tentativas.";
+    messageDisplay.className = 'result-message';
+    guessInput.value = '';
+    guessInput.disabled = false;
+    submitButton.disabled = false;
+    submitButton.textContent = 'ADIVINHAR';
+    instructionText.textContent = "Adivinhe o número entre 1 e 10!";
+
+    // Define o listener do botão ADIVINHAR (para garantir que só haja um)
+    submitButton.removeEventListener('click', checkGuess);
+    submitButton.addEventListener('click', checkGuess);
 }
 
-// --- CONTADOR DE PONTOS ---
-function updateScore() {
-    if (!isGameOver) {
-        pontosDeVigilancia += 1;
-        atualizarPlacar();
+/**
+ * Função para verificar o palpite do usuário.
+ */
+function checkGuess() {
+    const guess = parseInt(guessInput.value);
+
+    // Validação básica
+    if (isNaN(guess) || guess < 1 || guess > 10) {
+        messageDisplay.textContent = "Por favor, digite um número válido (1-10).";
+        messageDisplay.className = 'result-message';
+        return;
     }
-}
 
-// --- VERIFICAÇÃO DE COLISÃO ---
-function checkCollision() {
-    if (isGameOver) return;
-    
-    // Posições (usando getBoundingClientRect para precisão)
-    const batmanRect = batman.getBoundingClientRect();
-    const obstacleRect = obstaculo.getBoundingClientRect();
+    attempts++;
 
-    // Lógica de Colisão:
-    // 1. O obstáculo está na mesma faixa horizontal do Batman?
-    // 2. A parte superior do obstáculo está abaixo da parte inferior do Batman (colisão vertical)?
-    const isColliding = 
-        batmanRect.right > obstacleRect.left &&
-        batmanRect.left < obstacleRect.right &&
-        batmanRect.bottom > obstacleRect.top;
-
-    if (isColliding) {
-        gameOver();
-    }
-}
-
-// --- FIM DE JOGO ---
-function gameOver() {
-    isGameOver = true;
-    
-    // Para todos os loops de jogo
-    clearInterval(loopPontos);
-    clearInterval(loopColisao);
-    
-    // Para a animação do obstáculo
-    obstaculo.style.animationPlayState = 'paused';
-    
-    // Exibe a tela de Game Over
-    gameStatus.textContent = `FALHA NA MISSÃO! Pontos Finais: ${pontosDeVigilancia}`;
-    gameStatus.style.display = 'block';
-    restartButton.style.display = 'block';
-    exibirMensagem("O Coringa venceu desta vez. Reinicie a Missão!", '#ff4500'); // Vermelho
-}
-
-// --- EVENT LISTENERS ---
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' || e.key === ' ') {
-        if (isGameOver) {
-            startGame(); // Inicia o jogo se estiver em Game Over
-        } else {
-            jump(); // Pula se o jogo estiver ativo
-        }
-    }
-});
-
-// Evento de clique para pular (útil em dispositivos móveis ou com o mouse)
-gameBoard.addEventListener('click', () => {
-    if (isGameOver) {
-        startGame();
+    if (guess === secretNumber) {
+        // VENCEU
+        messageDisplay.textContent = "PARABÉNS! Você acertou em " + attempts + " tentativas!";
+        messageDisplay.className = 'result-message correct';
+        endGame('JOGAR NOVAMENTE');
+    } else if (attempts >= maxAttempts) {
+        // PERDEU
+        messageDisplay.textContent = "FIM DE JOGO! O número secreto era " + secretNumber + ".";
+        messageDisplay.className = 'result-message too-high'; // Usando a cor de erro
+        endGame('TENTAR NOVAMENTE');
     } else {
-        jump();
+        // CONTINUA O JOGO
+        if (guess > secretNumber) {
+            messageDisplay.textContent = "ERROU! É um número menor. Tentativas restantes: " + (maxAttempts - attempts);
+            messageDisplay.className = 'result-message too-high';
+        } else {
+            messageDisplay.textContent = "ERROU! É um número maior. Tentativas restantes: " + (maxAttempts - attempts);
+            messageDisplay.className = 'result-message too-low';
+        }
+        guessInput.value = ''; // Limpa o input
     }
-});
+}
 
-// Evento do botão de Reiniciar
-restartButton.addEventListener('click', startGame);
+/**
+ * Função para finalizar o jogo e mostrar o botão de reinício.
+ * @param {string} buttonText - Texto a ser exibido no botão.
+ */
+function endGame(buttonText) {
+    guessInput.disabled = true;
+    submitButton.disabled = true;
 
-// Inicializa o placar ao carregar a página
-document.addEventListener('DOMContentLoaded', (event) => {
-    atualizarPlacar();
-});
+    // Reposiciona o botão 'PLAY NOW' para ser um botão 'JOGAR NOVAMENTE'
+    const restartButton = startButton;
+    restartButton.querySelector('span').textContent = buttonText;
+    
+    inputArea.style.display = 'none';
+    gameArea.style.display = 'block';
+
+    // Define o listener para o reinício
+    restartButton.removeEventListener('click', startGame);
+    restartButton.addEventListener('click', startGame);
+}
+
+// Configura o botão inicial 'PLAY NOW' para iniciar o jogo
+startButton.addEventListener('click', startGame);
