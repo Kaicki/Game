@@ -41,7 +41,7 @@ header h1 { font-size:2em; }
 .card button:hover { background:#006400; }
 
 /* Carrinho */
-#cart { position:fixed; top:20px; right:20px; background:#FF0000; color:#fff; padding:15px; border-radius:10px; cursor:pointer; z-index:1000; }
+#cart { position:fixed; bottom:20px; right:20px; background:#FF0000; color:#fff; padding:15px; border-radius:50px; cursor:pointer; z-index:1000; box-shadow:0 5px 15px rgba(0,0,0,0.3);}
 #cartModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; }
 #cartContent { background:#fff; padding:30px; border-radius:10px; width:90%; max-width:500px; max-height:80%; overflow:auto; }
 #cartContent h2 { margin-bottom:20px; color:#008000; }
@@ -56,6 +56,8 @@ header h1 { font-size:2em; }
 .cards-container::-webkit-scrollbar-track { background: #ddd; border-radius:10px; }
 .cards-container::-webkit-scrollbar-thumb { background: #008000; border-radius:10px; }
 
+/* Footer */
+footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; margin-top:20px; font-size:0.9em; }
 </style>
 </head>
 <body>
@@ -87,7 +89,23 @@ header h1 { font-size:2em; }
   </div>
 </div>
 
-<!-- DOCE -->
+<!-- VEGETARIANA -->
+<div class="category">
+  <h2>Vegetariana</h2>
+  <div class="cards-container">
+    <div class="cards">
+      <div class="card" data-name="Vegetariana" data-price="38">
+        <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Vegetariana">
+        <h3>Vegetariana</h3>
+        <p>Mussarela, tomate, pimentão e cebola</p>
+        <div class="price">R$ 38,00</div>
+        <button onclick="addToCart(this)">Adicionar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCES -->
 <div class="category">
   <h2>Doces</h2>
   <div class="cards-container">
@@ -104,22 +122,6 @@ header h1 { font-size:2em; }
         <h3>Romeu e Julieta</h3>
         <p>Goiabada com queijo</p>
         <div class="price">R$ 28,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- VEGETARIANA -->
-<div class="category">
-  <h2>Vegetariana</h2>
-  <div class="cards-container">
-    <div class="cards">
-      <div class="card" data-name="Vegetariana" data-price="38">
-        <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Vegetariana">
-        <h3>Vegetariana</h3>
-        <p>Mussarela, tomate, pimentão e cebola</p>
-        <div class="price">R$ 38,00</div>
         <button onclick="addToCart(this)">Adicionar</button>
       </div>
     </div>
@@ -149,20 +151,50 @@ header h1 { font-size:2em; }
   </div>
 </div>
 
-<!-- DOCES/SOBREMESAS -->
-<div class="category">
-  <h2>Sobremesas</h2>
-  <div class="cards-container">
-    <div class="cards">
-      <div class="card" data-name="Pudim" data-price="15">
-        <img src="https://images.unsplash.com/photo-1589307004411-0a97eebec0c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Pudim">
-        <h3>Pudim</h3>
-        <p>Delicioso pudim caseiro</p>
-        <div class="price">R$ 15,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-      <div class="card" data-name="Brigadeiro" data-price="5">
-        <img src="https://images.unsplash.com/photo-1606813908338-f850f0b089fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Brigadeiro">
-        <h3>Brigadeiro</h3>
-        <p>Tradicional doce brasileiro</p>
-        <div
+<!-- Carrinho -->
+<div id="cart">Carrinho (<span id="cartCount">0</span>)</div>
+<div id="cartModal">
+  <div id="cartContent">
+    <h2>Seu Pedido</h2>
+    <ul id="cartList"></ul>
+    <p>Total: R$ <span id="cartTotal">0</span></p>
+
+    <input type="text" id="nome" placeholder="Seu Nome" required>
+    <input type="text" id="telefone" placeholder="Telefone" required>
+    <input type="text" id="endereco" placeholder="Endereço" required>
+
+    <button onclick="sendWhatsApp()">Enviar Pedido via WhatsApp</button>
+    <br><br>
+    <button onclick="toggleCart()">Fechar</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  Desenvolvido por Don Juan Web Solutions © 2025
+</footer>
+
+<script>
+let cart = [];
+
+function addToCart(btn) {
+  const card = btn.parentElement;
+  const name = card.dataset.name;
+  const price = parseFloat(card.dataset.price);
+  cart.push({name, price});
+  updateCart();
+}
+
+function removeItem(index) {
+  cart.splice(index,1);
+  updateCart();
+}
+
+function updateCart() {
+  const cartList = document.getElementById('cartList');
+  cartList.innerHTML = '';
+  let total = 0;
+  cart.forEach((item, i) => {
+    total += item.price;
+    const li = document.createElement('li');
+    li.innerHTML = `${item.name} - R$ ${item
