@@ -152,7 +152,7 @@ footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; m
 </div>
 
 <!-- Carrinho -->
-<div id="cart" onclick="toggleCart()">Carrinho (<span id="cartCount">0</span>)</div>
+<div id="cart">Carrinho (<span id="cartCount">0</span>)</div>
 <div id="cartModal">
   <div id="cartContent">
     <h2>Seu Pedido</h2>
@@ -162,7 +162,7 @@ footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; m
     <input type="text" id="nome" placeholder="Seu Nome" required>
     <input type="text" id="telefone" placeholder="Telefone" required>
     <input type="text" id="numero" placeholder="Número da casa" required>
-    <input type="text" id="cep" placeholder="CEP ou distância em km" required>
+    <input type="text" id="cep" placeholder="Digite seu CEP" required>
     <p>Frete: R$ <span id="freteValue">0.00</span></p>
 
     <button onclick="sendWhatsApp()">Enviar Pedido via WhatsApp</button>
@@ -177,6 +177,14 @@ footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; m
 
 <script>
 let cart = [];
+
+// Simulação de frete por cidade (você pode expandir)
+const fretePorCidade = {
+  "Campinas": 10,
+  "Valinhos": 8,
+  "Vinhedo": 12,
+  "Paulínia": 15
+};
 
 function addToCart(btn) {
   const card = btn.parentElement;
@@ -203,8 +211,6 @@ function updateCart() {
   });
   document.getElementById('cartCount').innerText = cart.length;
   document.getElementById('cartTotal').innerText = total.toFixed(2);
-
-  // Recalcula frete ao atualizar carrinho
   calcularFrete();
 }
 
@@ -213,54 +219,37 @@ function toggleCart() {
   modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
 }
 
-// Calcula frete simples baseado no valor digitado
-function calcularFrete() {
-  const cep = document.getElementById('cep').value;
+// Frete baseado no CEP (simulação com ViaCEP)
+async function calcularFrete() {
+  const cep = document.getElementById('cep').value.replace(/\D/g,'');
   let frete = 0;
-  const distancia = parseFloat(cep);
-  if(!isNaN(distancia)){
-    if(distancia <= 5) frete = 5;
-    else if(distancia <= 10) frete = 10;
-    else frete = 15;
+  if(cep.length === 8){
+    try{
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+      const cidade = data.localidade || "";
+      frete = fretePorCidade[cidade] || 15; // 15 padrão se cidade não estiver na tabela
+    } catch(e){
+      frete = 15; // erro no fetch
+    }
   }
   document.getElementById('freteValue').innerText = frete.toFixed(2);
   return frete;
 }
 
-// WhatsApp
+document.getElementById('cep').addEventListener('input', calcularFrete);
+
 const phone = '5511999999999'; // Substitua pelo número da pizzaria
 
-function buildMessage() {
+async function buildMessage() {
   const nome = document.getElementById('nome').value || '';
   const telefone = document.getElementById('telefone').value || '';
   const numero = document.getElementById('numero').value || '';
-  const frete = calcularFrete();
+  const frete = await calcularFrete();
 
   if(!nome || !telefone || !numero || !document.getElementById('cep').value) { alert('Preencha todos os campos!'); return ''; }
 
   let msg = '📩 *Novo pedido - Pizzaria Don Juan*%0A%0A';
   let total = 0;
   cart.forEach((item,i) => {
-    msg += `${i+1}. ${item.name} - R$ ${item.price.toFixed(2)}%0A`;
-    total += item.price;
-  });
-  total += frete;
-  msg += `%0A*Frete*: R$ ${frete.toFixed(2)}%0A`;
-  msg += `*Total*: R$ ${total.toFixed(2)}%0A%0A`;
-  msg += `📍 Dados do cliente:%0ANome: ${nome}%0ATelefone: ${telefone}%0ANúmero da casa: ${numero}%0ACEP/Distância: ${document.getElementById('cep').value}`;
-  return msg;
-}
-
-function sendWhatsApp() {
-  const message = buildMessage();
-  if(!message) return;
-  const url = `https://wa.me/${phone}?text=${message}`;
-  window.open(url, '_blank');
-}
-
-// Recalcular frete quando CEP/distância mudar
-document.getElementById('cep').addEventListener('input', calcularFrete);
-</script>
-
-</body>
-</html>
+    msg += `${i+1}.
