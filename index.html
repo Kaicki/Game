@@ -3,27 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pizzaria Saboroso - Pedido Online</title>
+<title>Pizzaria Saboroso</title>
 <style>
-body { font-family: 'Poppins', sans-serif; background: #fff3e0; color:#333; margin:0; padding:0; }
-header { background:#ff6f00; color:#fff; padding:20px; text-align:center; }
-h1,h2 { color:#ff6f00; text-align:center; }
-.cards { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
-.card { background:#fff; width:220px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); overflow:hidden; text-align:center; }
-.card img { width:100%; height:150px; object-fit:cover; }
-.card h3 { margin:10px 0; }
-.card p { font-size:0.9em; color:#555; }
-.card .price { font-weight:bold; margin-bottom:10px; color:#ff6f00; }
-.card button { margin-bottom:15px; padding:10px 20px; border:none; background:#ff6f00; color:#fff; border-radius:20px; cursor:pointer; transition:0.3s; }
-.card button:hover { background:#ff8c42; }
-#cart { position:fixed; top:20px; right:20px; background:#ff6f00; color:#fff; padding:15px; border-radius:10px; cursor:pointer; z-index:1000; }
-#cartModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; }
-#cartContent { background:#fff; padding:30px; border-radius:10px; width:90%; max-width:500px; max-height:80%; overflow:auto; }
-#cartContent h2 { margin-bottom:20px; color:#ff6f00; }
-#cartContent ul { list-style:none; padding:0; margin-bottom:20px; }
-#cartContent li { margin-bottom:10px; display:flex; justify-content:space-between; }
-#cartContent button { padding:10px 20px; border:none; background:#ff6f00; color:#fff; border-radius:20px; cursor:pointer; transition:0.3s; }
-#cartContent button:hover { background:#ff8c42; }
+body { font-family: 'Poppins', sans-serif; background: #fff3e0; color:#333; margin:0; padding:0;}
+header { background:#ff6f00; color:#fff; padding:20px; text-align:center;}
+h1,h2 { color:#ff6f00; text-align:center;}
+.cards { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px;}
+.card { background:#fff; width:220px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); overflow:hidden; text-align:center;}
+.card img { width:100%; height:150px; object-fit:cover;}
+.card h3 { margin:10px 0;}
+.card p { font-size:0.9em; color:#555;}
+.card .price { font-weight:bold; margin-bottom:10px; color:#ff6f00;}
+.card button { margin-bottom:15px; padding:10px 20px; border:none; background:#ff6f00; color:#fff; border-radius:20px; cursor:pointer; transition:0.3s;}
+.card button:hover { background:#ff8c42;}
+#cart { position:fixed; top:20px; right:20px; background:#ff6f00; color:#fff; padding:15px; border-radius:10px; cursor:pointer; z-index:1000;}
+#cartModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;}
+#cartContent { background:#fff; padding:30px; border-radius:10px; width:90%; max-width:500px; max-height:80%; overflow:auto;}
+#cartContent h2 { margin-bottom:20px; color:#ff6f00;}
+#cartContent ul { list-style:none; padding:0; margin-bottom:20px;}
+#cartContent li { margin-bottom:10px; display:flex; justify-content:space-between;}
+#cartContent input { width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;}
+#cartContent button { padding:10px 20px; border:none; background:#ff6f00; color:#fff; border-radius:20px; cursor:pointer; transition:0.3s;}
+#cartContent button:hover { background:#ff8c42;}
 </style>
 </head>
 <body>
@@ -40,7 +41,6 @@ h1,h2 { color:#ff6f00; text-align:center; }
     <div class="price">R$ 35,00</div>
     <button onclick="addToCart(this)">Adicionar</button>
   </div>
-
   <div class="card" data-name="Pepperoni" data-price="40">
     <img src="https://images.unsplash.com/photo-1617196037982-3a71eecb7e9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Pepperoni">
     <h3>Pepperoni</h3>
@@ -48,7 +48,6 @@ h1,h2 { color:#ff6f00; text-align:center; }
     <div class="price">R$ 40,00</div>
     <button onclick="addToCart(this)">Adicionar</button>
   </div>
-
   <div class="card" data-name="Quatro Queijos" data-price="45">
     <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Quatro Queijos">
     <h3>Quatro Queijos</h3>
@@ -65,15 +64,13 @@ h1,h2 { color:#ff6f00; text-align:center; }
     <h2>Seu Pedido</h2>
     <ul id="cartList"></ul>
     <p>Total: R$ <span id="cartTotal">0</span></p>
-    <form action="pedido.php" method="POST">
-      <input type="text" name="nome" placeholder="Seu Nome" required><br><br>
-      <input type="text" name="telefone" placeholder="Telefone" required><br><br>
-      <input type="text" name="endereco" placeholder="Endereço" required><br><br>
-      <input type="hidden" name="pizzas" id="hiddenPizzas">
-      <input type="hidden" name="total" id="hiddenTotal">
-      <button type="submit">Finalizar Pedido</button>
-    </form>
-    <br>
+
+    <input type="text" id="nome" placeholder="Seu Nome" required>
+    <input type="text" id="telefone" placeholder="Telefone" required>
+    <input type="text" id="endereco" placeholder="Endereço" required>
+
+    <button onclick="sendWhatsApp()">Enviar Pedido via WhatsApp</button>
+    <br><br>
     <button onclick="toggleCart()">Fechar</button>
   </div>
 </div>
@@ -89,6 +86,11 @@ function addToCart(btn) {
   updateCart();
 }
 
+function removeItem(index) {
+  cart.splice(index,1);
+  updateCart();
+}
+
 function updateCart() {
   const cartList = document.getElementById('cartList');
   cartList.innerHTML = '';
@@ -101,18 +103,36 @@ function updateCart() {
   });
   document.getElementById('cartCount').innerText = cart.length;
   document.getElementById('cartTotal').innerText = total.toFixed(2);
-  document.getElementById('hiddenPizzas').value = JSON.stringify(cart);
-  document.getElementById('hiddenTotal').value = total.toFixed(2);
-}
-
-function removeItem(index) {
-  cart.splice(index,1);
-  updateCart();
 }
 
 function toggleCart() {
   const modal = document.getElementById('cartModal');
   modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+}
+
+// WhatsApp
+const phone = '5511999999999'; // Número do WhatsApp do estabelecimento
+
+function buildMessage() {
+  const nome = document.getElementById('nome').value || '';
+  const telefone = document.getElementById('telefone').value || '';
+  const endereco = document.getElementById('endereco').value || '';
+
+  let msg = '📩 *Novo pedido*%0A%0A';
+  let total = 0;
+  cart.forEach((item,i) => {
+    msg += `${i+1}. ${item.name} - R$ ${item.price.toFixed(2)}%0A`;
+    total += item.price;
+  });
+  msg += `%0A*Total*: R$ ${total.toFixed(2)}%0A%0A`;
+  msg += `📍 Dados do cliente:%0ANome: ${nome}%0ATelefone: ${telefone}%0AEndereço: ${endereco}`;
+  return msg;
+}
+
+function sendWhatsApp() {
+  if(cart.length === 0) { alert('Adicione pelo menos uma pizza!'); return; }
+  const url = `https://wa.me/${phone}?text=${buildMessage()}`;
+  window.open(url, '_blank');
 }
 </script>
 
