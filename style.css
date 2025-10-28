@@ -166,7 +166,68 @@ body {
 .bat-logo .fa-bat::before {
     content: "\f2b9"; /* Código de um ícone de morcego genérico ou similar, se disponível. Ou substitua por um SVG real. */
 }
-/* Se você não tem um ícone de morcego no Font Awesome (que é o caso, 'fa-bat' não existe nativamente), 
-   você pode usar um ícone genérico ou substituir por um elemento <img> com um SVG real.
-   Por exemplo: `<img src="batman-logo.svg" alt="Bat-Sinal" class="bat-logo-svg">`
-*/
+
+#game-board {
+    width: 600px;
+    height: 200px;
+    background-color: var(--bat-dark-gray);
+    border-bottom: 5px solid var(--bat-light-gray); /* O chão de Gotham */
+    margin: 40px auto;
+    position: relative;
+    overflow: hidden; /* Garante que o obstáculo comece fora de vista */
+    border: 3px solid var(--bat-blue);
+}
+
+#batman {
+    width: 40px;
+    height: 40px;
+    background-color: #000000; 
+    border: 2px solid var(--bat-yellow); 
+    border-radius: 5px;
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    /* Animação de pulo (inicialmente vazia) */
+}
+
+/* Classe que será adicionada/removida via JS para fazer o pulo */
+.jump {
+    animation: jump-animation 0.5s ease-out;
+}
+
+@keyframes jump-animation {
+    0% { bottom: 0; }
+    40% { bottom: 120px; }
+    60% { bottom: 120px; }
+    100% { bottom: 0; }
+}
+
+#joker-obstacle {
+    width: 25px;
+    height: 40px;
+    background-color: #4CAF50; /* Verde-curinga */
+    border: 2px solid #9C27B0; /* Roxo-curinga */
+    position: absolute;
+    bottom: 0;
+    right: -25px;
+    /* Animação para o movimento */
+    animation: obstacle-move 1.5s infinite linear;
+    /* Parar a animação no início */
+    animation-play-state: paused; 
+}
+
+@keyframes obstacle-move {
+    0% { right: -25px; }
+    100% { right: 600px; }
+}
+
+#game-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5em;
+    font-family: var(--bat-font-title);
+    color: var(--bat-yellow);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
