@@ -150,14 +150,15 @@ footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; m
     </div>
   </div>
 </div>
-
+  
 <!-- Carrinho -->
 <div id="cart">Carrinho (<span id="cartCount">0</span>)</div>
+
 <div id="cartModal">
   <div id="cartContent">
     <h2>Seu Pedido</h2>
     <ul id="cartList"></ul>
-    <p>Total Produtos: R$ <span id="cartTotal">0</span></p>
+    <p>Total Produtos: R$ <span id="cartTotal">0.00</span></p>
 
     <input type="text" id="nome" placeholder="Seu Nome" required>
     <input type="text" id="telefone" placeholder="Telefone" required>
@@ -178,7 +179,7 @@ footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; m
 <script>
 let cart = [];
 
-// Simulação de frete por cidade (você pode expandir)
+// Frete simulado por cidade
 const fretePorCidade = {
   "Campinas": 10,
   "Valinhos": 8,
@@ -216,10 +217,22 @@ function updateCart() {
 
 function toggleCart() {
   const modal = document.getElementById('cartModal');
-  modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+  if(modal.style.display === 'flex'){
+    modal.style.display = 'none';
+  } else {
+    updateCart(); // Atualiza antes de abrir
+    modal.style.display = 'flex';
+  }
 }
 
-// Frete baseado no CEP (simulação com ViaCEP)
+// Fecha ao clicar fora do conteúdo
+document.getElementById('cartModal').addEventListener('click', function(e){
+  if(e.target === this){
+    this.style.display = 'none';
+  }
+});
+
+// Calcula frete com CEP usando ViaCEP (simulação)
 async function calcularFrete() {
   const cep = document.getElementById('cep').value.replace(/\D/g,'');
   let frete = 0;
@@ -228,9 +241,9 @@ async function calcularFrete() {
       const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const data = await res.json();
       const cidade = data.localidade || "";
-      frete = fretePorCidade[cidade] || 15; // 15 padrão se cidade não estiver na tabela
+      frete = fretePorCidade[cidade] || 15;
     } catch(e){
-      frete = 15; // erro no fetch
+      frete = 15;
     }
   }
   document.getElementById('freteValue').innerText = frete.toFixed(2);
@@ -241,15 +254,37 @@ document.getElementById('cep').addEventListener('input', calcularFrete);
 
 const phone = '5511999999999'; // Substitua pelo número da pizzaria
 
-async function buildMessage() {
+function buildMessage() {
   const nome = document.getElementById('nome').value || '';
   const telefone = document.getElementById('telefone').value || '';
   const numero = document.getElementById('numero').value || '';
-  const frete = await calcularFrete();
+  const cep = document.getElementById('cep').value || '';
+  const frete = parseFloat(document.getElementById('freteValue').innerText) || 0;
 
-  if(!nome || !telefone || !numero || !document.getElementById('cep').value) { alert('Preencha todos os campos!'); return ''; }
+  if(!nome || !telefone || !numero || !cep) { 
+    alert('Preencha todos os campos!'); 
+    return ''; 
+  }
 
   let msg = '📩 *Novo pedido - Pizzaria Don Juan*%0A%0A';
   let total = 0;
   cart.forEach((item,i) => {
-    msg += `${i+1}.
+    msg += `${i+1}. ${item.name} - R$ ${item.price.toFixed(2)}%0A`;
+    total += item.price;
+  });
+  total += frete;
+  msg += `%0A*Frete*: R$ ${frete.toFixed(2)}%0A`;
+  msg += `*Total*: R$ ${total.toFixed(2)}%0A%0A`;
+  msg += `📍 Dados do cliente:%0ANome: ${nome}%0ATelefone: ${telefone}%0ANúmero da casa: ${numero}%0ACEP: ${cep}`;
+  return msg;
+}
+
+function sendWhatsApp() {
+  const message = buildMessage();
+  if(!message) return;
+  const url = `https://wa.me/${phone}?text=${message}`;
+  window.open(url,'_blank');
+}
+</script>
+</body>
+</html>
