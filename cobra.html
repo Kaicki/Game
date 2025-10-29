@@ -3,141 +3,292 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake - Cobra Animada</title>
+<title>Snake Top-Down</title>
 <style>
 body {
-  background: #000;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   font-family: Arial, sans-serif;
-  color: white;
+  background: #000;
+  color: #fff;
+  text-align: center;
+}
+
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg,#111,#222);
+}
+
+#menu h1 {
+  font-size: 3rem;
+  color: #ffcc00;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px #000;
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.menu-group label {
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+select, button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  margin: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+select {
+  background: #222;
+  color: #fff;
+}
+
+button {
+  background: #ffcc00;
+  color: #000;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #ffaa00;
+  transform: scale(1.05);
+}
+
+#game-container {
+  display: none;
+  margin-top: 20px;
+}
+
+#score {
+  font-size: 1.3rem;
+  margin-top: 10px;
+}
+
+#end-screen {
+  display: none;
+  margin-top: 30px;
 }
 
 canvas {
   background: #111;
-  border: 4px solid #ffcc00;
   border-radius: 12px;
+  margin-top: 10px;
 }
-
 </style>
 </head>
 <body>
 
-<canvas id="game" width="500" height="500"></canvas>
+<div id="menu">
+  <h1>🐍 Snake Realista</h1>
+
+  <div class="menu-group">
+    <label for="skin">Cor da Cobra</label>
+    <select id="skin">
+      <option value="#00ff85">Verde Neon</option>
+      <option value="#ff4d4d">Vermelho Lava</option>
+      <option value="#6c63ff">Violeta Cósmico</option>
+      <option value="#4dd5ff">Azul Neon</option>
+      <option value="#ffffff">Branco Gelo</option>
+    </select>
+  </div>
+
+  <div class="menu-group">
+    <label for="speed">Dificuldade</label>
+    <select id="speed">
+      <option value="150">Fácil</option>
+      <option value="100">Médio</option>
+      <option value="70">Difícil</option>
+      <option value="40">Insano</option>
+    </select>
+  </div>
+
+  <div class="menu-group">
+    <label for="board">Tamanho do Tabuleiro</label>
+    <select id="board">
+      <option value="16">Pequeno</option>
+      <option value="22" selected>Médio</option>
+      <option value="30">Grande</option>
+    </select>
+  </div>
+
+  <button onclick="startGame()">Iniciar Jogo</button>
+</div>
+
+<div id="game-container">
+  <div id="score">Pontuação: 0</div>
+  <canvas id="game"></canvas>
+</div>
+
+<div id="end-screen">
+  <h2 id="final-score">Você perdeu!</h2>
+  <button onclick="startGame()">Jogar Novamente</button>
+  <button onclick="showMenu()">Menu</button>
+</div>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+let canvas, ctx, grid, snake, apple, dx, dy, speed, gameLoop, skinColor, score=0;
 
-let box = 20;
-let snake = [{ x: 10 * box, y: 10 * box }];
-let direction = "right";
-let food = spawnFood();
+function startGame(){
+  document.getElementById("menu").style.display="none";
+  document.getElementById("end-screen").style.display="none";
+  document.getElementById("game-container").style.display="block";
 
-// Anima a comida
-let foodPulse = 0;
+  let boardSize = parseInt(document.getElementById("board").value);
+  canvas = document.getElementById("game");
+  canvas.width = canvas.height = boardSize*20;
+  ctx = canvas.getContext("2d");
 
-document.addEventListener("keydown", event => {
-  if (event.key === "ArrowUp" && direction !== "down") direction = "up";
-  if (event.key === "ArrowDown" && direction !== "up") direction = "down";
-  if (event.key === "ArrowLeft" && direction !== "right") direction = "left";
-  if (event.key === "ArrowRight" && direction !== "left") direction = "right";
-});
+  grid = boardSize;
+  skinColor = document.getElementById("skin").value;
+  speed = parseInt(document.getElementById("speed").value);
 
-function spawnFood() {
-  return {
-    x: Math.floor(Math.random() * 25) * box,
-    y: Math.floor(Math.random() * 25) * box
-  };
+  snake = [{x: Math.floor(grid/2), y: Math.floor(grid/2)}];
+  apple = {x: Math.floor(Math.random()*grid), y: Math.floor(Math.random()*grid)};
+  dx = 1; dy = 0;
+
+  score=0;
+  document.getElementById("score").innerText="Pontuação: "+score;
+
+  clearInterval(gameLoop);
+  gameLoop=setInterval(update,speed);
 }
 
-function drawSnake() {
-  snake.forEach((part, index) => {
-    // Cor com degradê para simular escamas
-    const grad = ctx.createRadialGradient(
-      part.x + 10, part.y + 10, 2,
-      part.x + 10, part.y + 10, 14
-    );
-    grad.addColorStop(0, "#2ecc71");
-    grad.addColorStop(1, "#145a32");
-    
-    ctx.fillStyle = grad;
-    ctx.fillRect(part.x, part.y, box, box);
+function update(){
+  let head={x:snake[0].x+dx,y:snake[0].y+dy};
 
-    // Desenhar olhos na cabeça
-    if (index === 0) {
-      ctx.fillStyle = "#fff";
-      ctx.beginPath();
-      ctx.arc(part.x + 6, part.y + 7, 3, 0, Math.PI * 2);
-      ctx.arc(part.x + 14, part.y + 7, 3, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#000";
-      ctx.beginPath();
-      ctx.arc(part.x + 6, part.y + 7, 1.5, 0, Math.PI * 2);
-      ctx.arc(part.x + 14, part.y + 7, 1.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  });
-}
-
-function drawFood() {
-  foodPulse += 0.1;
-  let scale = 1 + Math.sin(foodPulse) * 0.1;
-
-  ctx.save();
-  ctx.translate(food.x + box/2, food.y + box/2);
-  ctx.scale(scale, scale);
-  ctx.fillStyle = "#ff3333";
-  ctx.beginPath();
-  ctx.arc(0, 0, box/2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function update() {
-  let head = { ...snake[0] };
-
-  if (direction === "right") head.x += box;
-  if (direction === "left") head.x -= box;
-  if (direction === "up") head.y -= box;
-  if (direction === "down") head.y += box;
-
-  // Se bater
-  if (
-    head.x < 0 || head.x >= canvas.width ||
-    head.y < 0 || head.y >= canvas.height ||
-    snake.some(p => p.x === head.x && p.y === head.y)
-  ) {
-    alert("Game Over! Aperte OK para jogar de novo.");
-    snake = [{ x: 10 * box, y: 10 * box }];
-    direction = "right";
-    food = spawnFood();
-    return;
+  if(head.x<0||head.y<0||head.x>=grid||head.y>=grid||snake.some(s=>s.x===head.x&&s.y===head.y)){
+    return gameOver();
   }
 
   snake.unshift(head);
 
-  // Se comer
-  if (head.x === food.x && head.y === food.y) {
-    food = spawnFood();
-  } else {
-    snake.pop();
+  if(head.x===apple.x && head.y===apple.y){
+    score++;
+    document.getElementById("score").innerText="Pontuação: "+score;
+    apple={x:Math.floor(Math.random()*grid),y:Math.floor(Math.random()*grid)};
+  } else snake.pop();
+
+  draw();
+}
+
+function draw(){
+  ctx.fillStyle="#111";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // 🍎 Maçã
+  ctx.fillStyle="#ffcc00";
+  ctx.beginPath();
+  ctx.arc(apple.x*20+10,apple.y*20+10,8,0,Math.PI*2);
+  ctx.fill();
+
+  // 🐍 Corpo contínuo
+  ctx.fillStyle=skinColor;
+  for(let i=0;i<snake.length;i++){
+    let s=snake[i];
+    ctx.beginPath();
+    ctx.arc(s.x*20+10,s.y*20+10,9,0,Math.PI*2);
+    ctx.fill();
+    if(i>0){
+      let prev=snake[i-1];
+      ctx.fillRect(Math.min(s.x,prev.x)*20+10,Math.min(s.y,prev.y)*20+10,Math.abs(s.x-prev.x)*20+1,Math.abs(s.y-prev.y)*20+1);
+    }
+  }
+
+  drawHead(snake[0].x,snake[0].y);
+}
+
+function drawHead(x,y){
+  ctx.fillStyle=skinColor;
+  ctx.beginPath();
+  ctx.arc(x*20+10,y*20+10,10,0,Math.PI*2);
+  ctx.fill();
+
+  drawEyes(x,y);
+  drawMouth(x,y);
+}
+
+function drawEyes(x,y){
+  // Olhos brancos com pupila preta seguindo a maçã
+  let centerX = x*20+10;
+  let centerY = y*20+10;
+
+  // Posição da pupila limitada dentro do olho
+  let dxEye = apple.x*20+10 - centerX;
+  let dyEye = apple.y*20+10 - centerY;
+  let angle = Math.atan2(dyEye,dxEye);
+  let maxOffset = 3; // quanto a pupila pode se mover
+  let ex = maxOffset * Math.cos(angle);
+  let ey = maxOffset * Math.sin(angle);
+
+  // Olho esquerdo
+  ctx.fillStyle="#fff";
+  ctx.beginPath();
+  ctx.arc(centerX-4,centerY-4,4,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#000";
+  ctx.beginPath();
+  ctx.arc(centerX-4+ex,centerY-4+ey,2,0,Math.PI*2);
+  ctx.fill();
+
+  // Olho direito
+  ctx.fillStyle="#fff";
+  ctx.beginPath();
+  ctx.arc(centerX+4,centerY-4,4,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.fillStyle="#000";
+  ctx.beginPath();
+  ctx.arc(centerX+4+ex,centerY-4+ey,2,0,Math.PI*2);
+  ctx.fill();
+}
+
+function drawMouth(x,y){
+  let headX = x*20+10;
+  let headY = y*20+10;
+  let distance = Math.hypot(apple.x*20+10 - headX, apple.y*20+10 - headY);
+  if(distance<20){
+    ctx.strokeStyle="red";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(headX-4,headY+6);
+    ctx.lineTo(headX,headY+12);
+    ctx.lineTo(headX+4,headY+6);
+    ctx.stroke();
   }
 }
 
-function gameLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFood();
-  drawSnake();
-  update();
+function gameOver(){
+  clearInterval(gameLoop);
+  document.getElementById("game-container").style.display="none";
+  document.getElementById("final-score").innerText="Você perdeu! Pontuação final: "+score;
+  document.getElementById("end-screen").style.display="block";
 }
 
-setInterval(gameLoop, 100);
-</script>
+function showMenu(){
+  document.getElementById("end-screen").style.display="none";
+  document.getElementById("menu").style.display="flex";
+}
 
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="ArrowUp" && dy!==1){dx=0;dy=-1;}
+  if(e.key==="ArrowDown" && dy!==-1){dx=0;dy=1;}
+  if(e.key==="ArrowLeft" && dx!==1){dx=-1;dy=0;}
+  if(e.key==="ArrowRight" && dx!==-1){dx=1;dy=0;}
+});
+</script>
 </body>
 </html>
