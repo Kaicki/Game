@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo de Corrida 2D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: column;
+  }
+  canvas {
+    background: linear-gradient(#333, #000);
+    border: 3px solid #0f0;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #0f0;
+  }
+  #hud {
+    position: absolute;
+    top: 20px;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 18px;
+    text-shadow: 0 0 8px #0f0;
+  }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+<div id="hud">Pontuação: <span id="score">0</span></div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let car = {
+  x: 200,
+  y: 450, // Carro fixo na parte de baixo
+  width: 40,
+  height: 70
+};
+
+let keys = {};
+let score = 0;
+let gameOver = false;
+let obstacles = [];
+let obstacleTimer = 0;
+
+// Teclado
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+// Controle por toque
+canvas.addEventListener("touchstart", (e) => {
+  const x = e.touches[0].clientX;
+  keys["left"] = x < window.innerWidth / 2;
+  keys["right"] = x > window.innerWidth / 2;
+});
+canvas.addEventListener("touchend", () => {
+  keys["left"] = false;
+  keys["right"] = false;
+});
+
+function drawCar() {
+  ctx.fillStyle = "#0f0";
+  ctx.fillRect(car.x - car.width/2, car.y - car.height/2, car.width, car.height);
+}
+
+function updateCar() {
+  if (keys["ArrowLeft"] || keys["left"]) car.x -= 4;
+  if (keys["ArrowRight"] || keys["right"]) car.x += 4;
+
+  // Limites da pista
+  if (car.x < 60) car.x = 60;
+  if (car.x > canvas.width - 60) car.x = canvas.width - 60;
+}
+
+function drawTrack() {
+  ctx.fillStyle = "#111";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#0f0";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+  ctx.setLineDash([20, 20]);
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2, 30);
+  ctx.lineTo(canvas.width / 2, canvas.height - 30);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function spawnObstacle() {
+  if (obstacleTimer <= 0) {
+    const obsWidth = 40;
+    const obsHeight = 60;
+    const obsX = 60 + Math.random() * (canvas.width - 120 - obsWidth);
+    obstacles.push({ x: obsX, y: -obsHeight, width: obsWidth, height: obsHeight });
+    obstacleTimer = 60 + Math.random() * 50;
+  } else obstacleTimer--;
+}
+
+function updateObstacles() {
+  for (let o of obstacles) o.y += 4;
+
+  obstacles = obstacles.filter(o => {
+    if (
+      car.x + car.width/2 > o.x &&
+      car.x - car.width/2 < o.x + o.width &&
+      car.y + car.height/2 > o.y &&
+      car.y - car.height/2 < o.y + o.height
+    ) gameOver = true;
+    return o.y < canvas.height + 50;
+  });
+}
+
+function drawObstacles() {
+  ctx.fillStyle = "red";
+  for (let o of obstacles) ctx.fillRect(o.x, o.y, o.width, o.height);
+}
+
+function loop() {
+  if (gameOver) {
+    ctx.fillStyle = "rgba(0,0,0,0.8)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#0f0";
+    ctx.font = "30px monospace";
+    ctx.fillText("Game Over!", 120, 280);
+    ctx.font = "20px monospace";
+    ctx.fillText("Toque para reiniciar", 100, 320);
+    canvas.addEventListener("touchstart", resetGame, { once: true });
+    return;
+  }
+
+  drawTrack();
+  spawnObstacle();
+  updateObstacles();
+  drawObstacles();
+  updateCar();
+  drawCar();
+
+  score++;
+  document.getElementById("score").innerText = score;
+
+  requestAnimationFrame(loop);
+}
+
+function resetGame() {
+  gameOver = false;
+  car.x = 200;
+  score = 0;
+  obstacles = [];
+  obstacleTimer = 0;
+  loop();
+}
+
+loop();
+</script>
+</body>
+</html>
