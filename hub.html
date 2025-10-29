@@ -9,12 +9,12 @@
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
-  background: #000000; /* fundo preto fosco */
+  background: #000000;
   color: #fff;
 }
 
 header {
-  background: #111111; /* preto mais claro que o fundo */
+  background: #111111;
   padding: 20px;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0,0,0,0.5);
@@ -34,7 +34,7 @@ h1 {
 }
 
 .game-card {
-  background: #1a1a1a; /* preto fosco nos cards */
+  background: #1a1a1a;
   border-radius: 12px;
   padding: 10px;
   text-align: center;
@@ -68,7 +68,6 @@ footer {
   color: #ccc;
 }
 
-/* Responsividade */
 @media(max-width:600px){
   .games-container{
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -97,17 +96,17 @@ const games = [
   {
     name: "Jogo da Memória",
     img: "https://via.placeholder.com/200x120.png?text=Memoria",
-    link: "https://example.com/memoria"
+    page: "memoria.html"
   },
   {
     name: "Flappy Bird",
     img: "https://via.placeholder.com/200x120.png?text=Flappy+Bird",
-    link: "https://example.com/flappy"
+    page: "flappy.html"
   },
   {
     name: "Snake",
     img: "https://via.placeholder.com/200x120.png?text=Snake",
-    link: "https://example.com/snake"
+    page: "cobra.html"
   }
 ];
 
@@ -122,10 +121,16 @@ games.forEach(game => {
     <img src="${game.img}" alt="${game.name}">
     <h3>${game.name}</h3>
   `;
-  card.addEventListener("click", () => window.open(game.link, "_blank"));
-  card.addEventListener("keypress", e => {
-    if(e.key === "Enter") window.open(game.link, "_blank");
+  
+  // Ao clicar, abre a página dentro do site
+  card.addEventListener("click", () => {
+    window.location.href = game.page; // muda para nome.html
   });
+  
+  card.addEventListener("keypress", e => {
+    if(e.key === "Enter") window.location.href = game.page;
+  });
+  
   container.appendChild(card);
 });
 </script>
