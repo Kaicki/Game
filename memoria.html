@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da Memória</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#menu h1 {
+  font-size: 3rem;
+  color: #ffcc00;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px #000;
+}
+
+.menu-group {
+  margin: 10px 0;
+}
+
+select, button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  margin: 8px;
+  cursor: pointer;
+}
+
+button {
+  background: #ffcc00;
+  color: #000;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #ffaa00;
+  transform: scale(1.05);
+}
+
+#game-container {
+  display: none;
+  margin-top: 20px;
+  width: 90vw;
+  max-width: 600px;
+}
+
+#score {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.card {
+  width: 80px;
+  height: 80px;
+  perspective: 600px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.card-front {
+  background: #ffcc00;
+  color: #000;
+  transform: rotateY(180deg);
+}
+
+.card-back {
+  background: #222;
+  color: #fff;
+}
+
+.card.correct {
+  animation: glow 0.6s ease;
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 10px #fff; }
+  50% { box-shadow: 0 0 25px #ffcc00; }
+  100% { box-shadow: 0 0 10px #fff; }
+}
+
+#end-screen {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <h1>🧠 Jogo da Memória</h1>
+  <div class="menu-group">
+    <label for="difficulty">Dificuldade</label>
+    <select id="difficulty">
+      <option value="6">Fácil (6 pares)</option>
+      <option value="12">Médio (12 pares)</option>
+      <option value="18">Difícil (18 pares)</option>
+    </select>
+  </div>
+  <button onclick="startGame()">Iniciar Jogo</button>
+</div>
+
+<div id="game-container">
+  <div id="score">Pontuação: 0</div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div id="end-screen">
+  <h2 id="final-score">Parabéns!</h2>
+  <button onclick="startGame()">Jogar Novamente</button>
+  <button onclick="showMenu()">Menu</button>
+</div>
+
+<!-- Sons -->
+<audio id="music" loop>
+  <source src="https://assets.codepen.io/605876/game-music.mp3" type="audio/mpeg">
+</audio>
+<audio id="flipSound">
+  <source src="https://freesound.org/data/previews/146/146726_2637898-lq.mp3" type="audio/mpeg">
+</audio>
+<audio id="matchSound">
+  <source src="https://freesound.org/data/previews/276/276038_5121236-lq.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let gridElement = document.getElementById("grid");
+let difficultySelect = document.getElementById("difficulty");
+let scoreElement = document.getElementById("score");
+let music = document.getElementById("music");
+let flipSound = document.getElementById("flipSound");
+let matchSound = document.getElementById("matchSound");
+
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+let matchedPairs = 0;
+let totalPairs = 0;
+let score = 0;
+
+const images = [
+  "🐶","🐱","🦊","🐻","🐼","🐨","🦁","🐯","🐸","🐵","🐔","🐧",
+  "🦄","🐴","🐷","🐙","🦉","🦋"
+];
+
+function startGame(){
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("end-screen").style.display = "none";
+  document.getElementById("game-container").style.display = "block";
+
+  music.play();
+
+  totalPairs = parseInt(difficultySelect.value);
+  matchedPairs = 0;
+  score = 0;
+  scoreElement.innerText = "Pontuação: 0";
+
+  let selectedImages = images.slice(0,totalPairs);
+  let cardsArray = selectedImages.concat(selectedImages);
+  cardsArray.sort(()=> Math.random()-0.5);
+
+  gridElement.innerHTML = "";
+  let columns = Math.ceil(Math.sqrt(cardsArray.length));
+  gridElement.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+  cardsArray.forEach(symbol=>{
+    let card = document.createElement("div");
+    card.classList.add("card", "flipped"); // COMEÇA virada para cima
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">${symbol}</div>
+        <div class="card-back">❓</div>
+      </div>
+    `;
+    card.addEventListener("click", flipCard);
+    gridElement.appendChild(card);
+  });
+
+  // Após 2 segundos, vira todas para baixo
+  setTimeout(()=>{
+    document.querySelectorAll('.card').forEach(card=>{
+      card.classList.remove('flipped'); // vira para baixo
+    });
+  },2000);
+}
+
+function flipCard(){
+  if(lockBoard) return;
+  if(this===firstCard) return;
+
+  flipSound.play();
+  this.classList.add("flipped");
+
+  if(!firstCard){
+    firstCard = this;
+    return;
+  }
+
+  secondCard = this;
+  lockBoard = true;
+
+  let firstSymbol = firstCard.querySelector(".card-front").textContent;
+  let secondSymbol = secondCard.querySelector(".card-front").textContent;
+
+  if(firstSymbol===secondSymbol){
+    score += 10;
+    matchedPairs++;
+    scoreElement.innerText = "Pontuação: "+score;
+    firstCard.classList.add("correct");
+    secondCard.classList.add("correct");
+    matchSound.play();
+    firstCard.removeEventListener("click", flipCard);
+    secondCard.removeEventListener("click", flipCard);
+    setTimeout(resetBoard, 600);
+    if(matchedPairs===totalPairs){
+      setTimeout(gameEnd, 800);
+    }
+  } else {
+    setTimeout(unflip,800);
+  }
+}
+
+function unflip(){
+  firstCard.classList.remove("flipped");
+  secondCard.classList.remove("flipped");
+  resetBoard();
+}
+
+function resetBoard(){
+  [firstCard,secondCard,lockBoard] = [null,null,false];
+}
+
+function gameEnd(){
+  document.getElementById("game-container").style.display="none";
+  document.getElementById("final-score").innerText = "Parabéns! Sua pontuação: "+score;
+  document.getElementById("end-screen").style.display="block";
+  music.pause();
+  music.currentTime = 0;
+}
+
+function showMenu(){
+  document.getElementById("end-screen").style.display="none";
+  document.getElementById("menu").style.display="flex";
+}
+</script>
+
+</body>
+</html>
