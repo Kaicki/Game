@@ -3,288 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pizzaria Don Juan</title>
+<title>Uiverse - Bem-vindo</title>
 <style>
-body { font-family: 'Poppins', sans-serif; background: #fff; color:#333; margin:0; padding:0;}
-h1,h2,h3 { margin:0; padding:0; }
-
-/* Header */
-header { background: #008000; color: #fff; padding: 25px 20px; text-align:center; position: relative; }
-header h1 { font-size:2em; }
-
-/* Category Section */
-.category { margin:20px 0; }
-.category h2 { color: #008000; margin-left:20px; }
-.cards-container {
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 20px;
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #000;
+  color: white;
+  font-family: Arial, sans-serif;
 }
-.cards {
-  display: inline-flex;
-  gap: 20px;
+
+.shadow__btn {
+  padding: 10px 20px;
+  border: none;
+  font-size: 17px;
+  color: #fff;
+  border-radius: 7px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: 0.5s;
+  transition-property: box-shadow;
+  background: rgb(0,140,255);
+  box-shadow: 0 0 25px rgb(0,140,255);
+  cursor: pointer;
 }
-.card {
-  display: inline-block;
-  background: #fff;
-  width: 200px;
-  border-radius: 10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
-  text-align:center;
-  vertical-align: top;
+.shadow__btn:hover {
+  box-shadow: 0 0 5px rgb(0,140,255),
+              0 0 25px rgb(0,140,255),
+              0 0 50px rgb(0,140,255),
+              0 0 100px rgb(0,140,255);
 }
-.card img { width:100%; height:130px; object-fit:cover; border-top-left-radius:10px; border-top-right-radius:10px; }
-.card h3 { margin:10px 0; color: #008000; }
-.card p { font-size:0.9em; color:#555; padding:0 5px; }
-.card .price { font-weight:bold; margin:10px 0; color: #FF0000; }
-.card button { margin-bottom:15px; padding:8px 15px; border:none; background:#008000; color:#fff; border-radius:20px; cursor:pointer; transition:0.3s;}
-.card button:hover { background:#006400; }
 
-/* Carrinho no canto superior direito */
-#cart { position:fixed; top:20px; right:20px; background:#FF0000; color:#fff; padding:15px 20px; border-radius:50px; cursor:pointer; z-index:1000; box-shadow:0 5px 15px rgba(0,0,0,0.3);}
-#cartModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; display:flex; }
-#cartContent { background:#fff; padding:30px; border-radius:10px; width:90%; max-width:500px; max-height:80%; overflow:auto; }
-#cartContent h2 { margin-bottom:20px; color:#008000; }
-#cartContent ul { list-style:none; padding:0; margin-bottom:10px; }
-#cartContent li { margin-bottom:10px; display:flex; justify-content:space-between; }
-#cartContent input { width:100%; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;}
-#cartContent button { padding:10px 20px; border:none; background:#008000; color:#fff; border-radius:20px; cursor:pointer; transition:0.3s;}
-#cartContent button:hover { background:#006400; }
-
-/* Scroll styling */
-.cards-container::-webkit-scrollbar { height: 12px; }
-.cards-container::-webkit-scrollbar-track { background: #ddd; border-radius:10px; }
-.cards-container::-webkit-scrollbar-thumb { background: #008000; border-radius:10px; }
-
-/* Footer */
-footer { background:#008000; color:#fff; text-align:center; padding:15px 10px; margin-top:20px; font-size:0.9em; }
+h1 {
+  margin-bottom: 30px;
+}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Pizzaria Don Juan</h1>
-</header>
+<h1>Bem-vindo ao Uiverse</h1>
+<button class="shadow__btn" onclick="location.href='login.html'">Jogar</button>
 
-<!-- SALGADAS -->
-<div class="category">
-  <h2>Salgadas</h2>
-  <div class="cards-container">
-    <div class="cards">
-      <div class="card" data-name="Margherita" data-price="35">
-        <img src="https://images.unsplash.com/photo-1601924582970-94e6e429bd3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Margherita">
-        <h3>Margherita</h3>
-        <p>Molho de tomate, mussarela, manjericão fresco</p>
-        <div class="price">R$ 35,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-      <div class="card" data-name="Pepperoni" data-price="40">
-        <img src="https://images.unsplash.com/photo-1617196037982-3a71eecb7e9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Pepperoni">
-        <h3>Pepperoni</h3>
-        <p>Molho de tomate, mussarela e pepperoni fatiado</p>
-        <div class="price">R$ 40,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- VEGETARIANA -->
-<div class="category">
-  <h2>Vegetariana</h2>
-  <div class="cards-container">
-    <div class="cards">
-      <div class="card" data-name="Vegetariana" data-price="38">
-        <img src="https://images.unsplash.com/photo-1562967916-eb82221dfb5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Vegetariana">
-        <h3>Vegetariana</h3>
-        <p>Mussarela, tomate, pimentão e cebola</p>
-        <div class="price">R$ 38,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- DOCES -->
-<div class="category">
-  <h2>Doces</h2>
-  <div class="cards-container">
-    <div class="cards">
-      <div class="card" data-name="Chocolate" data-price="25">
-        <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Chocolate">
-        <h3>Chocolate</h3>
-        <p>Massa doce, chocolate ao leite</p>
-        <div class="price">R$ 25,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-      <div class="card" data-name="Romeu e Julieta" data-price="28">
-        <img src="https://images.unsplash.com/photo-1606312614917-1e093bc99ffb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Romeu e Julieta">
-        <h3>Romeu e Julieta</h3>
-        <p>Goiabada com queijo</p>
-        <div class="price">R$ 28,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- REFRIGERANTES -->
-<div class="category">
-  <h2>Refrigerantes</h2>
-  <div class="cards-container">
-    <div class="cards">
-      <div class="card" data-name="Coca-Cola 2L" data-price="12">
-        <img src="https://images.unsplash.com/photo-1589987602067-2f1d0b6672f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Coca-Cola">
-        <h3>Coca-Cola 2L</h3>
-        <p>Refrigerante geladinho</p>
-        <div class="price">R$ 12,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-      <div class="card" data-name="Guaraná 2L" data-price="10">
-        <img src="https://images.unsplash.com/photo-1590080875482-6c72cbd5b5ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500&q=80" alt="Guaraná">
-        <h3>Guaraná 2L</h3>
-        <p>Refrigerante geladinho</p>
-        <div class="price">R$ 10,00</div>
-        <button onclick="addToCart(this)">Adicionar</button>
-      </div>
-    </div>
-  </div>
-</div>
-  
-<!-- Carrinho -->
-<div id="cart">Carrinho (<span id="cartCount">0</span>)</div>
-
-<div id="cartModal">
-  <div id="cartContent">
-    <h2>Seu Pedido</h2>
-    <ul id="cartList"></ul>
-    <p>Total Produtos: R$ <span id="cartTotal">0.00</span></p>
-
-    <input type="text" id="nome" placeholder="Seu Nome" required>
-    <input type="text" id="telefone" placeholder="Telefone" required>
-    <input type="text" id="numero" placeholder="Número da casa" required>
-    <input type="text" id="cep" placeholder="Digite seu CEP" required>
-    <p>Frete: R$ <span id="freteValue">0.00</span></p>
-
-    <button onclick="sendWhatsApp()">Enviar Pedido via WhatsApp</button>
-    <br><br>
-    <button onclick="toggleCart()">Fechar</button>
-  </div>
-</div>
-
-<footer>
-  Desenvolvido por Don Juan Web Solutions © 2025
-</footer>
-
-<script>
-let cart = [];
-
-// Frete simulado por cidade
-const fretePorCidade = {
-  "Campinas": 10,
-  "Valinhos": 8,
-  "Vinhedo": 12,
-  "Paulínia": 15
-};
-
-function addToCart(btn) {
-  const card = btn.parentElement;
-  const name = card.dataset.name;
-  const price = parseFloat(card.dataset.price);
-  cart.push({name, price});
-  updateCart();
-}
-
-function removeItem(index) {
-  cart.splice(index,1);
-  updateCart();
-}
-
-function updateCart() {
-  const cartList = document.getElementById('cartList');
-  cartList.innerHTML = '';
-  let total = 0;
-  cart.forEach((item,i) => {
-    total += item.price;
-    const li = document.createElement('li');
-    li.innerHTML = `${item.name} - R$ ${item.price.toFixed(2)} <button onclick="removeItem(${i})">Remover</button>`;
-    cartList.appendChild(li);
-  });
-  document.getElementById('cartCount').innerText = cart.length;
-  document.getElementById('cartTotal').innerText = total.toFixed(2);
-  calcularFrete();
-}
-
-function toggleCart() {
-  const modal = document.getElementById('cartModal');
-  if(modal.style.display === 'flex'){
-    modal.style.display = 'none';
-  } else {
-    updateCart(); // Atualiza antes de abrir
-    modal.style.display = 'flex';
-  }
-}
-
-// Fecha ao clicar fora do conteúdo
-document.getElementById('cartModal').addEventListener('click', function(e){
-  if(e.target === this){
-    this.style.display = 'none';
-  }
-});
-
-// Calcula frete com CEP usando ViaCEP (simulação)
-async function calcularFrete() {
-  const cep = document.getElementById('cep').value.replace(/\D/g,'');
-  let frete = 0;
-  if(cep.length === 8){
-    try{
-      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await res.json();
-      const cidade = data.localidade || "";
-      frete = fretePorCidade[cidade] || 15;
-    } catch(e){
-      frete = 15;
-    }
-  }
-  document.getElementById('freteValue').innerText = frete.toFixed(2);
-  return frete;
-}
-
-document.getElementById('cep').addEventListener('input', calcularFrete);
-
-const phone = '5511999999999'; // Substitua pelo número da pizzaria
-
-function buildMessage() {
-  const nome = document.getElementById('nome').value || '';
-  const telefone = document.getElementById('telefone').value || '';
-  const numero = document.getElementById('numero').value || '';
-  const cep = document.getElementById('cep').value || '';
-  const frete = parseFloat(document.getElementById('freteValue').innerText) || 0;
-
-  if(!nome || !telefone || !numero || !cep) { 
-    alert('Preencha todos os campos!'); 
-    return ''; 
-  }
-
-  let msg = '📩 *Novo pedido - Pizzaria Don Juan*%0A%0A';
-  let total = 0;
-  cart.forEach((item,i) => {
-    msg += `${i+1}. ${item.name} - R$ ${item.price.toFixed(2)}%0A`;
-    total += item.price;
-  });
-  total += frete;
-  msg += `%0A*Frete*: R$ ${frete.toFixed(2)}%0A`;
-  msg += `*Total*: R$ ${total.toFixed(2)}%0A%0A`;
-  msg += `📍 Dados do cliente:%0ANome: ${nome}%0ATelefone: ${telefone}%0ANúmero da casa: ${numero}%0ACEP: ${cep}`;
-  return msg;
-}
-
-function sendWhatsApp() {
-  const message = buildMessage();
-  if(!message) return;
-  const url = `https://wa.me/${phone}?text=${message}`;
-  window.open(url,'_blank');
-}
-</script>
 </body>
 </html>
