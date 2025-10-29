@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flappy Bird</title>
+<style>
+body {
+  margin: 0;
+  background: #70c5ce;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#menu h1 {
+  font-size: 3rem;
+  color: #ffcc00;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px #000;
+}
+
+.menu-group {
+  margin: 10px 0;
+}
+
+select, button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  margin: 8px;
+  cursor: pointer;
+}
+
+button {
+  background: #ffcc00;
+  color: #000;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #ffaa00;
+  transform: scale(1.05);
+}
+
+#gameCanvas {
+  display: none;
+  background: #70c5ce;
+  border: 2px solid #000;
+  margin-top: 20px;
+}
+
+#scoreDisplay {
+  font-size: 1.5rem;
+  color: #fff;
+  text-shadow: 2px 2px #000;
+  margin-top: 10px;
+}
+
+#endScreen {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+}
+
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <h1>🕹️ Flappy Bird</h1>
+  <div class="menu-group">
+    <label for="difficulty">Dificuldade</label>
+    <select id="difficulty">
+      <option value="easy">Fácil</option>
+      <option value="medium">Médio</option>
+      <option value="hard">Difícil</option>
+    </select>
+  </div>
+  <div class="menu-group">
+    <label for="skin">Skin do Pássaro</label>
+    <select id="skin">
+      <option value="yellow">Amarelo</option>
+      <option value="red">Vermelho</option>
+      <option value="blue">Azul</option>
+    </select>
+  </div>
+  <button onclick="startGame()">Iniciar Jogo</button>
+</div>
+
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+<div id="scoreDisplay"></div>
+
+<div id="endScreen">
+  <h2 id="finalScore">Fim de jogo!</h2>
+  <button onclick="startGame()">Jogar Novamente</button>
+  <button onclick="showMenu()">Menu</button>
+</div>
+
+<!-- Sons -->
+<audio id="jumpSound">
+  <source src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3" type="audio/mpeg">
+</audio>
+<audio id="hitSound">
+  <source src="https://freesound.org/data/previews/178/178186_3248244-lq.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const jumpSound = document.getElementById('jumpSound');
+const hitSound = document.getElementById('hitSound');
+
+let bird = {};
+let pipes = [];
+let score = 0;
+let gameInterval;
+let gravity = 0.5;
+let difficulty = 'easy';
+let birdColor = 'yellow';
+
+function startGame() {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('endScreen').style.display = 'none';
+  canvas.style.display = 'block';
+  score = 0;
+  pipes = [];
+  birdColor = document.getElementById('skin').value;
+  difficulty = document.getElementById('difficulty').value;
+
+  bird = {
+    x: 80,
+    y: canvas.height/2,
+    width: 30,
+    height: 30,
+    velocity: 0,
+    rotation: 0
+  };
+
+  let pipeInterval = 2000;
+  if(difficulty==='medium') pipeInterval = 1500;
+  if(difficulty==='hard') pipeInterval = 1000;
+
+  if(gameInterval) clearInterval(gameInterval);
+  gameInterval = setInterval(gameLoop, 20);
+  setInterval(() => generatePipe(), pipeInterval);
+}
+
+function generatePipe() {
+  let gap = 120;
+  if(difficulty==='medium') gap = 100;
+  if(difficulty==='hard') gap = 80;
+  let topHeight = Math.floor(Math.random()*(canvas.height-gap-50))+50;
+  pipes.push({
+    x: canvas.width,
+    top: topHeight,
+    bottom: canvas.height - topHeight - gap,
+    passed: false
+  });
+}
+
+function gameLoop() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Update bird
+  bird.velocity += gravity;
+  bird.y += bird.velocity;
+  bird.rotation = Math.min(Math.PI/4, bird.velocity/10);
+
+  // Draw bird
+  ctx.save();
+  ctx.translate(bird.x+bird.width/2, bird.y+bird.height/2);
+  ctx.rotate(bird.rotation);
+  ctx.fillStyle = birdColor;
+  ctx.fillRect(-bird.width/2, -bird.height/2, bird.width, bird.height);
+  // Eyes
+  ctx.fillStyle = 'white';
+  ctx.fillRect(-bird.width/4, -bird.height/4, 8, 8);
+  ctx.fillRect(bird.width/8, -bird.height/4, 8, 8);
+  ctx.fillStyle = 'black';
+  ctx.fillRect(-bird.width/4+3, -bird.height/4+3, 3, 3);
+  ctx.fillRect(bird.width/8+3, -bird.height/4+3, 3, 3);
+  ctx.restore();
+
+  // Update and draw pipes
+  for(let i=0;i<pipes.length;i++){
+    pipes[i].x -= 2 + (difficulty==='medium'?1:0) + (difficulty==='hard'?2:0);
+    ctx.fillStyle = 'green';
+    ctx.fillRect(pipes[i].x, 0, 50, pipes[i].top);
+    ctx.fillRect(pipes[i].x, canvas.height-pipes[i].bottom, 50, pipes[i].bottom);
+
+    // Score
+    if(!pipes[i].passed && pipes[i].x + 50 < bird.x){
+      score++;
+      pipes[i].passed = true;
+    }
+
+    // Collision
+    if(bird.x < pipes[i].x + 50 && bird.x + bird.width > pipes[i].x &&
+       (bird.y < pipes[i].top || bird.y + bird.height > canvas.height - pipes[i].bottom)){
+      endGame();
+      return;
+    }
+  }
+
+  // Floor & ceiling
+  if(bird.y + bird.height > canvas.height || bird.y < 0){
+    endGame();
+    return;
+  }
+
+  ctx.fillStyle = 'white';
+  ctx.font = '24px Arial';
+  ctx.fillText("Pontuação: "+score, 10, 30);
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space'){
+    bird.velocity = -7;
+    jumpSound.play();
+  }
+});
+
+function endGame(){
+  clearInterval(gameInterval);
+  hitSound.play();
+  canvas.style.display='none';
+  document.getElementById('finalScore').innerText = "Pontuação: "+score;
+  document.getElementById('endScreen').style.display='block';
+}
+
+function showMenu(){
+  document.getElementById('endScreen').style.display='none';
+  document.getElementById('menu').style.display='flex';
+}
+</script>
+
+</body>
+</html>
