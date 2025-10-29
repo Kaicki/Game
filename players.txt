@@ -1,3 +1,0 @@
-kaicki:12345
-maria:senha123
-pedro:abc123
