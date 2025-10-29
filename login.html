@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hub - Uiverse</title>
+<title>Login - Uiverse</title>
 <style>
 body {
   display: flex;
@@ -11,25 +11,71 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #000;
+  background: #111;
   color: white;
   font-family: Arial, sans-serif;
 }
 
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #222;
+  padding: 30px;
+  border-radius: 10px;
 }
 
-p {
-  font-size: 1.2em;
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px;
+  border-radius: 7px;
+  border: none;
+  background: rgb(0,140,255);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  box-shadow: 0 0 10px rgb(0,140,255);
 }
 </style>
 </head>
 <body>
 
-<h1>Bem-vindo ao Hub!</h1>
-<p>Você agora está dentro do Uiverse.</p>
+<h1>Login Uiverse</h1>
+
+<form id="loginForm">
+  <input type="text" id="username" placeholder="Usuário" required>
+  <input type="password" id="password" placeholder="Senha" required>
+  <button type="submit">Entrar</button>
+</form>
+
+<script>
+const form = document.getElementById('loginForm');
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  // Aqui você pode validar o login (opcional)
+  if(username && password){
+    // Redireciona para hub.html
+    window.location.href = 'hub.html';
+  } else {
+    alert("Preencha todos os campos!");
+  }
+});
+</script>
 
 </body>
 </html>
+
